@@ -18,11 +18,13 @@ import ROUTES from "./routes";
 import Login from "../screen/Login";
 import SignUp from "../screen/SignUp";
 
+import { Colors } from "../models/Colors";
+
 
 const RootStack = createStackNavigator<RootStackParams>();
 const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
-const isLogged = false;
+const isLogged = true;
 
 const HomeStack : React.FC = () => {
     return (
@@ -49,7 +51,7 @@ const MainStack: React.FC = () => {
           component={Login}
           options={{
             headerShown: false,
-            headerStyle: { backgroundColor: "rgb(79,172,217)" },
+            headerStyle: { backgroundColor: "#F9F5EB" },
           }}
         />
         <RootStack.Screen
@@ -111,7 +113,11 @@ const MainStack: React.FC = () => {
             <Drawer.Screen
                         name={ROUTES.Homepage}
                         component={TabNavigation}
-                        options={{ headerShown: true }}
+                        options={{
+                          headerShown: true, 
+                          headerStyle: {backgroundColor: Colors.Second}
+                          }
+                        }
                     />
             <Drawer.Screen name={ROUTES.Setting} component={SettingScreen} />
             <Drawer.Screen name={ROUTES.Profile} component={ProfileScreen} />

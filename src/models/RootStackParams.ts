@@ -1,6 +1,8 @@
+import { PersonDetails } from "./Data";
+
 type RootStackParams = {
   Home: undefined;
-  Detail: undefined;
+  Detail: {person: PersonDetails}
   HomeStack: undefined;
   Profile: undefined;
   Favorite: undefined;
