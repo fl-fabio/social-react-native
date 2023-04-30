@@ -1,15 +1,12 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, LogBox } from 'react-native';
 import NavigationProvider from './src/navigation';
-import RegisterScreen from './src/screen/RegisterScreen';
+import Login from './src/screen/Login';
 LogBox.ignoreAllLogs();
 export default function App() {
   
-  //return <NavigationProvider />
-return (
-  <>
-    <RegisterScreen />
-  </>)
+  return <NavigationProvider />
+
   
 }
 

@@ -12,19 +12,21 @@ import ProfileScreen from "../screen/ProfileScreen";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Favorites from "../screen/Favorites";
 import SettingScreen from "../screen/SettingScreen";
+import Login from "../screen/Login";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import ROUTES from "./routes";
 
-import Login from "../screen/Login";
+
 import SignUp from "../screen/SignUp";
 
 import { Colors } from "../models/Colors";
 
 
+
 const RootStack = createStackNavigator<RootStackParams>();
 const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
-const isLogged = true;
+const isLogged = false;
 
 const HomeStack : React.FC = () => {
     return (
@@ -59,9 +61,11 @@ const MainStack: React.FC = () => {
           component={SignUp}
           options={{
             headerShown: false,
-            headerStyle: { backgroundColor: "rgb(79,172,217)" },
+            headerStyle: { backgroundColor: "#F9F5EB" },
           }}
         />
+        
+        
       </RootStack.Navigator>
     );
   };
@@ -119,8 +123,10 @@ const MainStack: React.FC = () => {
                           }
                         }
                     />
+            
             <Drawer.Screen name={ROUTES.Setting} component={SettingScreen} />
             <Drawer.Screen name={ROUTES.Profile} component={ProfileScreen} />
+            {/* <Drawer.Screen name={ROUTES.Login} component={Login} /> */}
         </Drawer.Navigator>
     
       const NavigationProvider: React.FC = () => {

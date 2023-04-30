@@ -5,7 +5,7 @@ import { Colors } from '../models/Colors';
 interface InputProps {
     icon: React.ReactNode,
     label: string,
-    inputType?: 'default' | 'password' | 'numeric';
+    inputType?: 'default' | 'password' | 'numeric' | 'date';
     keyboardType?: 'default' | 'numeric' | 'email-address' | 'phone-pad';
     fieldButtonLabel?: string;
     fieldButtonFunction?: () => void;
@@ -24,16 +24,17 @@ const CustomInput = ({icon, inputType, label, keyboardType, fieldButtonLabel, fi
             style={styles.inputStyle}
             secureTextEntry={true}
           />
-        ) : (
-          <TextInput 
-            placeholder={label}
-            keyboardType={keyboardType}
-            style={styles.inputStyle}
-          />
-        )
+        ) : 
+            (inputType === 'date' ? (
+              '') : (
+                    <TextInput 
+                      placeholder={label}
+                      keyboardType={keyboardType}
+                      style={styles.inputStyle}
+                    />))
       }
       <TouchableOpacity onPress={fieldButtonFunction}>
-        <Text style={styles.textFieldButton}>{fieldButtonLabel}</Text>
+        <Text>{fieldButtonLabel}</Text>
       </TouchableOpacity>
     </View>
   )
@@ -44,17 +45,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     borderBottomColor: Colors.Third,
     borderBottomWidth: 1,
-    paddingBottom: 8,
-    marginBottom: 25,
+    paddingBottom: 4,
+    marginBottom: 20,
+    flex: 1,
   },
   inputStyle: {
     flex: 1,
     paddingVertical: 0
   },
-  textFieldButton: {
-    color: Colors.Second,
-    fontWeight: '700'
-  }
 })
 
 
