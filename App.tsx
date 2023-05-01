@@ -1,23 +1,18 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, LogBox } from 'react-native';
-import NavigationProvider from './src/navigation';
-import RegisterScreen from './src/screen/RegisterScreen';
-LogBox.ignoreAllLogs();
-export default function App() {
-  
-  //return <NavigationProvider />
-return (
-  <>
-    <RegisterScreen />
-  </>)
-  
-}
+import NavigationProvider from "./src/navigation";
+import { Provider } from "react-redux";
+import { persistor, store } from "./src/redux/index";
+import { PersistGate } from "redux-persist/integration/react";
+import { Text } from "react-native";
+/* LogBox.ignoreAllLogs(); */
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+const App = () => {
+  return (
+    <Provider store={store}>
+      <PersistGate loading={<Text>Loading...</Text>} persistor={persistor}>
+        <NavigationProvider />
+      </PersistGate>
+    </Provider>
+  );
+};
+export default App;
+

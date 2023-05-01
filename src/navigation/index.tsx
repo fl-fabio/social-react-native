@@ -7,24 +7,32 @@ import React from "react";
 import RootStackParams from "../models/RootStackParams";
 import DetailScreen from "../screen/DetailScreen";
 import HomeScreen from "../screen/HomeScreen";
-import { createDrawerNavigator } from "@react-navigation/drawer";
+import LogOut from "../components/Logout";
+import { DrawerNavigationProp, createDrawerNavigator } from "@react-navigation/drawer";
 import ProfileScreen from "../screen/ProfileScreen";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Favorites from "../screen/Favorites";
 import SettingScreen from "../screen/SettingScreen";
+import Login from "../screen/Login";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import ROUTES from "./routes";
+import { AccountProps } from "../redux/actions/accountActions";
 
-import Login from "../screen/Login";
+
 import SignUp from "../screen/SignUp";
 
 import { Colors } from "../models/Colors";
+import { useSelector } from "react-redux";
+
+import { useDispatch } from "react-redux";
+import { logout } from "../redux/actions/accountActions";
+import { log } from "react-native-reanimated";
 
 
 const RootStack = createStackNavigator<RootStackParams>();
 const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
-const isLogged = true;
+
 
 const HomeStack : React.FC = () => {
     return (
@@ -37,6 +45,7 @@ const HomeStack : React.FC = () => {
                 headerStyle: { backgroundColor: "rgb(79,172,217)" },
                 }}
             />
+            <RootStack.Screen name={ROUTES.Login} component={Login} />
             <RootStack.Screen name={ROUTES.Detail} component={DetailScreen} />
             <RootStack.Screen name={ROUTES.Favorite} component={Favorites} />
         </RootStack.Navigator>
@@ -59,9 +68,11 @@ const MainStack: React.FC = () => {
           component={SignUp}
           options={{
             headerShown: false,
-            headerStyle: { backgroundColor: "rgb(79,172,217)" },
+            headerStyle: { backgroundColor: "#F9F5EB" },
           }}
         />
+        
+        
       </RootStack.Navigator>
     );
   };
@@ -93,12 +104,12 @@ const MainStack: React.FC = () => {
             }}
           />
           <Tab.Screen
-            name={ROUTES.Favorite}
-            component={Favorites}
+            name={ROUTES.Profile}
+            component={ProfileScreen}
             options={{
               headerTintColor: "red",
               headerStyle: { backgroundColor: "#fc8386" },
-              tabBarLabel: "Favorites",
+              tabBarLabel: "Profile",
               tabBarIcon: ({ color, size }) => (
                 <MaterialCommunityIcons name="bookmark" color={color} size={size} />
               ),
@@ -108,8 +119,16 @@ const MainStack: React.FC = () => {
       );
 };
 
-    const DrawerMenu: React.FC = () => 
-        <Drawer.Navigator initialRouteName="Homepage">
+    const DrawerMenu: React.FC = () => {
+      const dispatch = useDispatch();
+      const navigation=useNavigation<DrawerNavigationProp<RootStackParams>>();
+    
+      const handleLogout = () => {
+        dispatch(logout());
+        navigation.navigate(ROUTES.Login);
+      }
+        return(
+          <Drawer.Navigator initialRouteName="Homepage">
             <Drawer.Screen
                         name={ROUTES.Homepage}
                         component={TabNavigation}
@@ -119,14 +138,30 @@ const MainStack: React.FC = () => {
                           }
                         }
                     />
+            
             <Drawer.Screen name={ROUTES.Setting} component={SettingScreen} />
             <Drawer.Screen name={ROUTES.Profile} component={ProfileScreen} />
+            <Drawer.Screen
+                  name={ROUTES.Logout}
+                  component={LogOut}
+                  options={{
+                    title: "Logout",
+                    drawerIcon: ({ color, size }) => (
+                      <MaterialCommunityIcons name="logout" color={color} size={size} />
+                    ),
+                  }}
+                />
+            {/* <Drawer.Screen name={ROUTES.Login} component={Login} /> */}
         </Drawer.Navigator>
-    
+        )
+      }
       const NavigationProvider: React.FC = () => {
+        const { account } = useSelector(
+          (state: { accountReducer: AccountProps }) => state.accountReducer
+        );
         return (
             <NavigationContainer>
-                {isLogged ? (
+                {account && account.isLogged ? (
                     <DrawerMenu/>
                 ) : (
                     <MainStack />

@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@babel/plugin-proposal-export-namespace-from": "^7.18.9",
+    "@react-native-async-storage/async-storage": "^1.18.1",
+    "@react-native-community/datetimepicker": "6.7.3",
     "@react-navigation/bottom-tabs": "^6.5.7",
     "@react-navigation/drawer": "^6.6.2",
     "@react-navigation/native": "^6.1.6",
@@ -20,10 +22,13 @@
     "react": "18.2.0",
     "react-dom": "^18.2.0",
     "react-native": "0.71.7",
-    "react-native-date-picker": "^4.2.13",
+    "react-native-modal-datetime-picker": "^15.0.0",
     "react-native-reanimated": "^2.14.4",
     "react-native-vector-icons": "^9.2.0",
-    "react-native-web": "~0.18.11"
+    "react-native-web": "~0.18.11",
+    "react-redux": "^8.0.5",
+    "redux": "^4.2.1",
+    "redux-persist": "^6.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

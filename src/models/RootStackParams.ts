@@ -10,6 +10,7 @@ type RootStackParams = {
   Homepage: undefined;
   SignUp: undefined;
   Login: undefined;
+  LogOut: undefined;
 };
 
 export default RootStackParams;
