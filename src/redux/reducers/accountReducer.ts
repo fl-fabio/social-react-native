@@ -8,7 +8,16 @@ import {
 
 
 const initialState: AccountProps = {
-    account: {email: '', password: '', isLogged: false}
+    account: {
+        name: '',
+        surname: '',
+        nat: '',
+        city: '',
+        phone: '',
+        date: new Date(),
+        email: '', 
+        password: '', 
+        isLogged: false}
 }
 
 const accountReducer = (state= initialState, action: AccountAction) => {

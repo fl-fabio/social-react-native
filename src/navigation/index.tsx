@@ -78,7 +78,8 @@ const MainStack: React.FC = () => {
   };
 
   const TabNavigation: React.FC = () => {
-    const { navigate } = useNavigation<StackNavigationProp<RootStackParams, ROUTES>>();
+    const { navigate } =
+    useNavigation<StackNavigationProp<RootStackParams, ROUTES>>();
     return (
         <Tab.Navigator
           initialRouteName={ROUTES.Home}

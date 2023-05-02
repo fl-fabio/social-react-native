@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Text, ScrollView, StyleSheet, Platform, StatusBar, SafeAreaView, View, Image, TouchableOpacity, TextInput} from 'react-native';
+import {Text, ScrollView, StyleSheet, Platform, StatusBar, SafeAreaView, View, Image, TouchableOpacity,i, TextInput} from 'react-native';
 import { Colors } from '../models/Colors';
 import CustomInput from '../components/CustomInput';
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -11,42 +11,14 @@ import { useDispatch } from 'react-redux';
 import { signUp } from '../redux/actions/accountActions';
 import { User } from '../models/User';
 
-import * as ImagePicker from "expo-image-picker";
-import { Camera, CameraType } from "expo-camera";
-
 
 const SignUp: ScreenFC<'SignUp'> = ({navigation}) => {
-
-    const [name, setName] = useState<string>();
-    const [surname, setSurname] = useState<string>();
-    const [nat, setNat] = useState<string>();
-    const [city, setCity] = useState<string>();
     const [email, setEmail] = useState<string>();
     const [password, setPassword] = useState<string>();
-    const [phone, setPhone] = useState<string>();
     const [date, setDate] = useState(new Date());
     const [open, setOpen] = useState(false);
     const [dateLabel, setDateLabel] = useState('Date of Birth');
-    const [user, setUser] = useState<User>();
-
-    const [image, setImage] = useState<string>();
-    const [type, setType] = useState(CameraType.back);
-    const [permission, requestPermission] = Camera.useCameraPermissions();
-    console.log(date); 
-
-    const pickImage = async () => {
-        ImagePicker.requestMediaLibraryPermissionsAsync
-        const result = await ImagePicker.launchImageLibraryAsync({
-          mediaTypes: ImagePicker.MediaTypeOptions.All,
-          allowsEditing: true,
-          aspect: [4, 3],
-          quality: 1,
-        });
-    
-        if (result.assets) {
-          setImage(result.assets[0].uri);
-        }
-      };
+    console.log(date);
 
    const dispatch = useDispatch();
   return (
@@ -63,7 +35,6 @@ const SignUp: ScreenFC<'SignUp'> = ({navigation}) => {
             <Text style={styles.headingText}>Register</Text>
             <CustomInput 
                 label={'Name'}
-                onChangeText={(value)=> setName(value)}
                 icon = {
                     <MaterialCommunityIcons 
                         name='face-man' 
@@ -71,18 +42,10 @@ const SignUp: ScreenFC<'SignUp'> = ({navigation}) => {
                         size={25}
                         style={styles.icons}/>}
             />
-            <View style={styles.toLoginView}>
-                <Text>Insert an image...</Text>
-                <TouchableOpacity onPress={pickImage}>
-                    <Text style={styles.toLoginText}>Click</Text>
-                </TouchableOpacity>
-            </View>
-            {image && (
-                <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
-            )}
+            <Text>{email}</Text>
+            <Text>{password}</Text>
             <CustomInput 
                 label={'Surname'}
-                onChangeText={(value)=> setSurname(value)}
                 icon = {
                     <MaterialCommunityIcons 
                         name='face-man' 
@@ -119,7 +82,6 @@ const SignUp: ScreenFC<'SignUp'> = ({navigation}) => {
             <View style={styles.addressView}>
                 <CustomInput 
                     label={'Nationality'}
-                    onChangeText={(value)=> setNat(value)}
                     icon = {
                         <MaterialCommunityIcons 
                             name='home-city-outline' 
@@ -129,7 +91,6 @@ const SignUp: ScreenFC<'SignUp'> = ({navigation}) => {
                 />
                 <CustomInput 
                     label={'City'}
-                    onChangeText={(value)=> setCity(value)}
                     icon = {
                         <MaterialCommunityIcons 
                             name='city' 
@@ -142,7 +103,6 @@ const SignUp: ScreenFC<'SignUp'> = ({navigation}) => {
             <CustomInput 
                 label={'Phone'}
                 key={'phone-pad'}
-                onChangeText={(value) => setPhone(value)}
                 icon = {
                     <MaterialCommunityIcons 
                         name='phone' 
@@ -175,8 +135,9 @@ const SignUp: ScreenFC<'SignUp'> = ({navigation}) => {
             <CustomButton 
                 label={'Register'} 
                 onPress={() => {
-                    (name && surname && nat && city && email && password && date && phone) &&
-                    dispatch(signUp({name, surname, nat, city, email, password, date, phone, isLogged:true}));
+                    email &&
+                      password &&
+                      dispatch(signUp({ email, password, isLogged: true }));
                   }} />
             <View style={styles.toLoginView}>
                 <Text>Already registered?</Text>

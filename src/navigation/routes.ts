@@ -8,7 +8,7 @@ enum ROUTES {
   Profile = "Profile",
   Login = "Login",
   SignUp = "SignUp",
-  Logout = "Logout"
+  Logout = "Logout",
 }
 
 export default ROUTES;

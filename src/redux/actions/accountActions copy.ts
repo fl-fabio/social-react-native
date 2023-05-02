@@ -1,12 +1,6 @@
 export interface Account {
-    name: string,
-    surname: string,
-    nat: string,
-    city: string,
     email: string,
     password: string,
-    date: Date,
-    phone: string,
     isLogged: boolean,
 }
 

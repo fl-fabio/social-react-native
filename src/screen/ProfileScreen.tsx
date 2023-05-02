@@ -25,6 +25,12 @@ const ProfileScreen : CustomScreenFC<'Profile'> = ({navigation}) => {
 
   return (
     <View style={styles.container}>
+      <Text>Name: {account.name}</Text>
+      <Text>Ciao</Text>
+      <Text>Surname: {account.surname}</Text>
+      <Text>Nationality: {account.nat}</Text>
+      <Text>City: {account.city}</Text>
+      <Text>BirthDay: {account.date.toString()}</Text>
       <Text>Email: {account.email}</Text>
       <Text>Logged: {String(account?.isLogged)} ?</Text>
 

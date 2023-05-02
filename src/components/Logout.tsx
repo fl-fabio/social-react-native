@@ -8,7 +8,7 @@ import { CustomScreenFC } from "../models/ScreenFC";
 
 
 
-const LogOut: CustomScreenFC<'LogOut'>= ({ navigation }) => {
+const LogOut: CustomScreenFC<'Logout'>= ({ navigation }) => {
   const dispatch = useDispatch();
   dispatch(logout());
   navigation.navigate("Login");
