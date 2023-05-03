@@ -17,6 +17,7 @@ const initialState: AccountProps = {
         date: new Date(),
         email: '', 
         password: '', 
+        image: '',
         isLogged: false}
 }
 

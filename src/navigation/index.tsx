@@ -71,8 +71,6 @@ const MainStack: React.FC = () => {
             headerStyle: { backgroundColor: "#F9F5EB" },
           }}
         />
-        
-        
       </RootStack.Navigator>
     );
   };
@@ -105,12 +103,18 @@ const MainStack: React.FC = () => {
             }}
           />
           <Tab.Screen
-            name={ROUTES.Profile}
-            component={ProfileScreen}
+            name={ROUTES.DrawerMenu}
+            component={DrawerMenu}
+            listeners={{
+              tabPress: () => {
+                navigate("DrawerMenu");
+              },
+            }}
             options={{
               headerTintColor: "red",
               headerStyle: { backgroundColor: "#fc8386" },
               tabBarLabel: "Profile",
+              headerShown: false,
               tabBarIcon: ({ color, size }) => (
                 <MaterialCommunityIcons name="bookmark" color={color} size={size} />
               ),
@@ -129,7 +133,7 @@ const MainStack: React.FC = () => {
         navigation.navigate(ROUTES.Login);
       }
         return(
-          <Drawer.Navigator initialRouteName="Homepage">
+          <Drawer.Navigator initialRouteName={ROUTES.Profile}>
             <Drawer.Screen
                         name={ROUTES.Homepage}
                         component={TabNavigation}
@@ -142,6 +146,7 @@ const MainStack: React.FC = () => {
             
             <Drawer.Screen name={ROUTES.Setting} component={SettingScreen} />
             <Drawer.Screen name={ROUTES.Profile} component={ProfileScreen} />
+            <Drawer.Screen name={ROUTES.Favorite} component={Favorites} />
             <Drawer.Screen
                   name={ROUTES.Logout}
                   component={LogOut}
@@ -152,6 +157,7 @@ const MainStack: React.FC = () => {
                     ),
                   }}
                 />
+                
             {/* <Drawer.Screen name={ROUTES.Login} component={Login} /> */}
         </Drawer.Navigator>
         )
@@ -163,7 +169,7 @@ const MainStack: React.FC = () => {
         return (
             <NavigationContainer>
                 {account && account.isLogged ? (
-                    <DrawerMenu/>
+                    <TabNavigation/>
                 ) : (
                     <MainStack />
                 )}

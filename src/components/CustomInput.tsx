@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react';
 import {View, StyleSheet, TextInput, TouchableOpacity, Text} from 'react-native';
 import { Colors } from '../models/Colors';
+import MaterialIcons from "react-native-vector-icons/MaterialIcons"
 
 interface InputProps {
     icon: React.ReactNode,
@@ -10,11 +11,15 @@ interface InputProps {
     fieldButtonLabel?: string;
     fieldButtonFunction?: () => void;
     onChangeText?: (value: string) => void;
+    onEndEditing? : (value: string) => void;
+    valid?: boolean
   }
 
 
-const CustomInput = ({icon, onChangeText, inputType, label, keyboardType, fieldButtonLabel, fieldButtonFunction }: InputProps) => {
+const CustomInput = ({icon, onChangeText, inputType, label, keyboardType, fieldButtonLabel, fieldButtonFunction, onEndEditing, valid=true}: InputProps) => {
+  const colorInput = valid ? {color: Colors.Fourth} : {color: Colors.Third}
   return (
+ 
     <View style={styles.inputView}>
       {icon}
       {inputType === 'password' ? (
@@ -24,21 +29,27 @@ const CustomInput = ({icon, onChangeText, inputType, label, keyboardType, fieldB
             style={styles.inputStyle}
             secureTextEntry={true}
             onChangeText={onChangeText}
+          
           />
         ) : 
             (inputType === 'date' ? (
               '') : (
                     <TextInput 
                       placeholder={label}
+                      
                       keyboardType={keyboardType}
-                      style={styles.inputStyle}
+                      style={[styles.inputStyle, colorInput]}
                       onChangeText={onChangeText}
                     />))
       }
       <TouchableOpacity onPress={fieldButtonFunction}>
         <Text>{fieldButtonLabel}</Text>
       </TouchableOpacity>
+      {valid === true ? null : <MaterialIcons name='error' style={styles.invalidText} />}
     </View>
+          
+  
+    
   )
 }
 
@@ -55,6 +66,10 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 0
   },
+  invalidText: {
+    color: Colors.Third,
+    fontSize: 20
+  }
 })
 
 

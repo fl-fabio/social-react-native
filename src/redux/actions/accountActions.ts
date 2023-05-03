@@ -8,6 +8,7 @@ export interface Account {
     date: Date,
     phone: string,
     isLogged: boolean,
+    image: string,
 }
 
 export interface AccountProps {

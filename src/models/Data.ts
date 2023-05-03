@@ -1,6 +1,7 @@
 export interface Person {
     id: {
         name: string;
+        value: string;
     }
     gender: string;
     name: {

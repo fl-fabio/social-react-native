@@ -1,17 +1,24 @@
 import React, {useState, useEffect} from 'react';
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Image, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, Platform, StatusBar, View, Image, FlatList, TouchableOpacity, SafeAreaView } from 'react-native';
 import {Person, PersonDetails} from '../models/Data'
 import { Colors } from '../models/Colors';
 import { ScreenFC } from '../models/ScreenFC';
+import CardHome from '../components/CardHome';
+import { v4 as uuid } from 'uuid';
+
+import { useDispatch } from 'react-redux';
+import { addBookmark } from '../redux/actions/bookmarkActions';
 
 const HomeScreen : ScreenFC<'Home'> = ({navigation}) => {
 
   const [state, setState] = useState<Array<PersonDetails>>();
 
-  useEffect(() => {
-    getData();
-  },[]);
+   useEffect(() => {
+    getData()
+    setInterval (
+      getData, 120000
+    )
+  }, []);
   
   const getData = async () => {
     try {
@@ -19,7 +26,7 @@ const HomeScreen : ScreenFC<'Home'> = ({navigation}) => {
         'https://randomuser.me/api/?results=24&exc=login,registered,phone&noinfo'
       );
       const res = await data.json();
-      console.log(res.results);
+
       if (data.status === 200) {
         setState(res.results);
       }
@@ -28,60 +35,40 @@ const HomeScreen : ScreenFC<'Home'> = ({navigation}) => {
     }
   };
 
-    interface Props {
-      icon: string,
-      name: string,
-      surname: string,
-      onPress: () => void,
-    }
-
-    const Card: React.FC<Props> = ({ icon, name, surname, onPress }) => (
-      <TouchableOpacity
-        activeOpacity={0.5}
-        onPress={onPress}
-      >
-        <View style={styles.iconContainer}>
-          <Image source={{uri: icon}} style={styles.iconImage} />
-          <Text>{name} {surname}</Text>
-        </View>
-      </TouchableOpacity>
-      
-  );
-
-  
-
+  const dispatch = useDispatch()
 
   return (
-    <View style={styles.container}>
-        <FlatList
+    <SafeAreaView style={styles.container}>
+
+      <Text>Ci sono {state?.length} risultati</Text>
+      <FlatList
           data={state}
           showsVerticalScrollIndicator={false}
+          keyExtractor={(_,index) => `key-${index}`}
           renderItem={({ item, index }) => 
-              <Card 
-                key={index}
-                name={item.name.first} 
-                surname={item.name.last} 
-                icon={item.picture.large} 
-                onPress={() => navigation.navigate('Detail', {person: {...item}})}/>}
+              <CardHome 
+                index={index}
+                item = {item}
+                onPressDetails={() => navigation.navigate('Detail', {person: {...item}})}
+                onPressBookmark={() => dispatch(addBookmark(item))}  
+                />}
+              
           numColumns={2}
         />
-    
-      <Text>I'm App!!!</Text>
-      <StatusBar style="auto" />
-    </View>
-
-    
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
     flex: 1,
     backgroundColor: Colors.First,
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
+    alignItems: 'center'
   },
   iconContainer: {
-    padding: 20,
+    padding: 10,
     flex: 1,
     alignItems: 'center',
   },

@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Text, ScrollView, StyleSheet, Platform, StatusBar, SafeAreaView, View, Image, TouchableOpacity,i, TextInput} from 'react-native';
+import {Text, ScrollView, StyleSheet, Platform, StatusBar, SafeAreaView, View, Image, TouchableOpacity, TextInput} from 'react-native';
 import { Colors } from '../models/Colors';
 import CustomInput from '../components/CustomInput';
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";

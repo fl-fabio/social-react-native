@@ -6,7 +6,7 @@ export interface BookmarkProps {
 
 export interface BookmarkAction {
     type: BOOKMARK_ACTIONS;
-    payload: PersonDetails | number;
+    payload: PersonDetails | string ;
 }
 
 export enum BOOKMARK_ACTIONS {
@@ -22,10 +22,10 @@ export const addBookmark = (bookmark: PersonDetails) => {
     };
 }
 
-export const removeBookmark = (id: number) => {
+export const removeBookmark = (bookmark: PersonDetails) => {
     return {
         type: BOOKMARK_ACTIONS.REMOVE_BOOKMARK,
-        payload: id,
+        payload: bookmark,
     };
 }
 

@@ -17,11 +17,15 @@ import { Camera, CameraType } from "expo-camera";
 
 const SignUp: ScreenFC<'SignUp'> = ({navigation}) => {
 
+    const [phoneIsValid, setPhoneIsValid] = useState(true);
+    const phoneRegex = /^\d{10}$/;
     const [name, setName] = useState<string>();
     const [surname, setSurname] = useState<string>();
     const [nat, setNat] = useState<string>();
     const [city, setCity] = useState<string>();
     const [email, setEmail] = useState<string>();
+    const [emailIsValid, setEmailIsValid] = useState(true);
+    const mailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const [password, setPassword] = useState<string>();
     const [phone, setPhone] = useState<string>();
     const [date, setDate] = useState(new Date());
@@ -32,7 +36,9 @@ const SignUp: ScreenFC<'SignUp'> = ({navigation}) => {
     const [image, setImage] = useState<string>();
     const [type, setType] = useState(CameraType.back);
     const [permission, requestPermission] = Camera.useCameraPermissions();
-    console.log(date); 
+  
+    
+    
 
     const pickImage = async () => {
         ImagePicker.requestMediaLibraryPermissionsAsync
@@ -49,6 +55,8 @@ const SignUp: ScreenFC<'SignUp'> = ({navigation}) => {
       };
 
    const dispatch = useDispatch();
+
+
   return (
     <SafeAreaView style={styles.container}>
         <ScrollView
@@ -76,10 +84,11 @@ const SignUp: ScreenFC<'SignUp'> = ({navigation}) => {
                 <TouchableOpacity onPress={pickImage}>
                     <Text style={styles.toLoginText}>Click</Text>
                 </TouchableOpacity>
-            </View>
-            {image && (
+                {image && (
                 <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
             )}
+            </View>
+           
             <CustomInput 
                 label={'Surname'}
                 onChangeText={(value)=> setSurname(value)}
@@ -109,10 +118,10 @@ const SignUp: ScreenFC<'SignUp'> = ({navigation}) => {
             <DateTimePickerModal 
                 isVisible={open}
                 mode='date'
-                onConfirm={(date) => {
+                onConfirm={(mydate) => {
                     setOpen(false);
-                    setDate(date);
-                    setDateLabel(date.toDateString());
+                    setDate(mydate);
+                    setDateLabel(mydate.toDateString());
                 }}
                 onCancel={() => setOpen(false)}
             />
@@ -142,18 +151,29 @@ const SignUp: ScreenFC<'SignUp'> = ({navigation}) => {
             <CustomInput 
                 label={'Phone'}
                 key={'phone-pad'}
-                onChangeText={(value) => setPhone(value)}
+                onChangeText={(value) => 
+                    {
+                        setPhone(value);
+                        (value === '' || phoneRegex.test(value)) ? setPhoneIsValid(true) : setPhoneIsValid(false)}
+                    }
+                    
                 icon = {
                     <MaterialCommunityIcons 
                         name='phone' 
                         color={Colors.Fourth} 
                         size={25}
                         style={styles.icons}/>}
+                onEndEditing={(value) => (value === '' || phoneRegex.test(value)) ? setPhoneIsValid(true) : setPhoneIsValid(false)}
+                valid={phoneIsValid}
             />
             <CustomInput 
                 label={'Email'}
                 keyboardType='email-address'
-                onChangeText={(value) => setEmail(value)}
+                valid = {emailIsValid}
+                onChangeText={(value) => {
+                    setEmail(value);
+                    mailRegex.test(value) ? setEmailIsValid(true) : setEmailIsValid(false)}   
+                }
                 icon = {
                     <MaterialCommunityIcons 
                         name='email' 
@@ -175,8 +195,8 @@ const SignUp: ScreenFC<'SignUp'> = ({navigation}) => {
             <CustomButton 
                 label={'Register'} 
                 onPress={() => {
-                    (name && surname && nat && city && email && password && date && phone) &&
-                    dispatch(signUp({name, surname, nat, city, email, password, date, phone, isLogged:true}));
+                    (name && surname && nat && city && email && password && date && phone && image) &&
+                    dispatch(signUp({name, surname, nat, city, email, password, date, phone, image, isLogged:true}));
                   }} />
             <View style={styles.toLoginView}>
                 <Text>Already registered?</Text>
