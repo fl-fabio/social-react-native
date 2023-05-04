@@ -9,7 +9,9 @@ enum ROUTES {
   Login = "Login",
   SignUp = "SignUp",
   Logout = "Logout",
-  DrawerMenu = "DrawerMenu"
+  DrawerMenu = "DrawerMenu",
+  EditProfile = 'EditProfile',
+  info = 'info'
 }
 
 export default ROUTES;

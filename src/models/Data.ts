@@ -28,6 +28,7 @@ export interface PersonDetails extends Person{
       age: number;
     };
     cell: string;
+    bookMarked?: boolean;
   }
   
 export interface ApiBasic {

@@ -39,7 +39,7 @@ const HomeScreen : ScreenFC<'Home'> = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-
+      
       <Text>Ci sono {state?.length} risultati</Text>
       <FlatList
           data={state}
@@ -50,8 +50,11 @@ const HomeScreen : ScreenFC<'Home'> = ({navigation}) => {
                 index={index}
                 item = {item}
                 onPressDetails={() => navigation.navigate('Detail', {person: {...item}})}
-                onPressBookmark={() => dispatch(addBookmark(item))}  
+                onPressBookmark={() => {
+                  dispatch(addBookmark(item))
+                }}  
                 />}
+          
               
           numColumns={2}
         />
@@ -62,10 +65,9 @@ const HomeScreen : ScreenFC<'Home'> = ({navigation}) => {
 const styles = StyleSheet.create({
   container: {
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
-    flex: 1,
     backgroundColor: Colors.First,
     paddingHorizontal: 10,
-    alignItems: 'center'
+
   },
   iconContainer: {
     padding: 10,

@@ -6,8 +6,9 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import MaterialIcons from "react-native-vector-icons/MaterialIcons"
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import CustomButton from '../components/CustomButton';
-import { ScreenFC } from '../models/ScreenFC';
-import { useDispatch } from 'react-redux';
+import { CustomScreenFC } from '../models/ScreenFC';
+import { useDispatch, useSelector } from 'react-redux';
+import { AccountProps, logout } from "../redux/actions/accountActions";
 import { signUp } from '../redux/actions/accountActions';
 import { User } from '../models/User';
 
@@ -15,35 +16,32 @@ import * as ImagePicker from "expo-image-picker";
 import { Camera, CameraType } from "expo-camera";
 
 
-const SignUp: ScreenFC<'SignUp'> = ({navigation}) => {
+const EditProfile: CustomScreenFC<'EditProfile'> = ({navigation}) => {
+    const dispatch = useDispatch();
+    const { account } = useSelector(
+     (state: { accountReducer: AccountProps }) => state.accountReducer
+   );
     
     const [phoneIsValid, setPhoneIsValid] = useState(true);
     const phoneRegex = /^\d{10}$/;
-    const [name, setName] = useState<string>();
-    const [surname, setSurname] = useState<string>();
-    const [nat, setNat] = useState<string>();
-    const [city, setCity] = useState<string>();
-    const [email, setEmail] = useState<string>();
+    const [name, setName] = useState<string>(account.name);
+    const [surname, setSurname] = useState<string>(account.surname);
+    const [nat, setNat] = useState<string>(account.nat);
+    const [city, setCity] = useState<string>(account.city);
+    const [email, setEmail] = useState<string>(account.email);
     const [emailIsValid, setEmailIsValid] = useState(true);
     const mailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const [password, setPassword] = useState<string>();
-    const [phone, setPhone] = useState<string>('');
-    const [date, setDate] = useState(new Date());
+    const [password, setPassword] = useState<string>(account.password);
+    const [phone, setPhone] = useState<string>(account.phone);
+    const [date, setDate] = useState(account.date);
     const [open, setOpen] = useState(false);
-    const [dateLabel, setDateLabel] = useState('Date of Birth');
+    const [dateLabel, setDateLabel] = useState('Change Date');
     const [user, setUser] = useState<User>();
 
-    const [image, setImage] = useState<string>();
+    const [image, setImage] = useState<string>(account.image);
     const [type, setType] = useState(CameraType.back);
     const [permission, requestPermission] = Camera.useCameraPermissions();
   
-  
-    
-
-    /* const [error, setError] = useState({
-        name: '',
-
-    }); */
     const [error, setError] = useState({})
 
     const handleSubmit = (event: GestureResponderEvent) => {
@@ -66,10 +64,6 @@ const SignUp: ScreenFC<'SignUp'> = ({navigation}) => {
         setError(newError);
       };
 
-    console.log(error)
-        console.log(!phone);
-     
-  
     
 
     const pickImage = async () => {
@@ -86,9 +80,6 @@ const SignUp: ScreenFC<'SignUp'> = ({navigation}) => {
         }
       };
 
-   const dispatch = useDispatch();
-
-
   return (
     <SafeAreaView style={styles.container}>
         <ScrollView
@@ -96,15 +87,20 @@ const SignUp: ScreenFC<'SignUp'> = ({navigation}) => {
         style={{paddingHorizontal: 25}}>
             <View style={styles.centeredImg}>
                 <Image 
-                    source={require('../../assets/img/registration.png')}
+                    source={{ uri: image }}
                     style={{width: 200, height: 200}}
                 />
             </View>
-            
-            <Text style={styles.headingText}>Register</Text>
+            <View style={styles.toLoginView}>
+                <Text>Change Image...</Text>
+                <TouchableOpacity onPress={pickImage}>
+                    <Text style={styles.toLoginText}>Click</Text>
+                </TouchableOpacity>
+            </View>
+
             <View style={styles.addressView}>
                 <CustomInput 
-                    label={'Name'}
+                    label={name}
                     onChangeText={(value)=> setName(value)}
                     icon = {
                         <MaterialCommunityIcons 
@@ -114,7 +110,7 @@ const SignUp: ScreenFC<'SignUp'> = ({navigation}) => {
                             style={styles.icons}/>}
                 />
                 <CustomInput 
-                    label={'Surname'}
+                    label={surname}
                     onChangeText={(value)=> setSurname(value)}
                     icon = {
                         <MaterialCommunityIcons 
@@ -124,25 +120,8 @@ const SignUp: ScreenFC<'SignUp'> = ({navigation}) => {
                             style={styles.icons}/>}
                 />
             </View>
-            <TouchableOpacity onPress={(e) =>{ handleSubmit(e); console.log(handleSubmit(e))}}>
-                <Text>Verifica</Text>
-            </TouchableOpacity>
-            <View style={styles.toLoginView}>
-                <Text>Insert an image...</Text>
-                <TouchableOpacity onPress={pickImage}>
-                    <Text style={styles.toLoginText}>Click</Text>
-                </TouchableOpacity>
-                
-            </View>
-            <View style={{alignItems: 'center', marginBottom: 15}}>
-                {image && (
-                    <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
-                )}
-            </View>
-           
-            
             <CustomInput 
-                label={'Date of Birthday'}
+                label={date.toString()}
                 inputType='date'
                 icon = {
                     <MaterialIcons
@@ -150,7 +129,7 @@ const SignUp: ScreenFC<'SignUp'> = ({navigation}) => {
                         color={Colors.Fourth} 
                         size={25}
                         style={styles.icons}/>}
-                fieldButtonLabel={dateLabel}
+                fieldButtonLabel={date.toString().slice(0,10)}
                 fieldButtonFunction={() => setOpen(true)}
 
             />
@@ -169,7 +148,7 @@ const SignUp: ScreenFC<'SignUp'> = ({navigation}) => {
             />
             <View style={styles.addressView}>
                 <CustomInput 
-                    label={'Nationality'}
+                    label={nat}
                     onChangeText={(value)=> setNat(value)}
                     icon = {
                         <MaterialCommunityIcons 
@@ -179,7 +158,7 @@ const SignUp: ScreenFC<'SignUp'> = ({navigation}) => {
                             style={styles.icons}/>}
                 />
                 <CustomInput 
-                    label={'City'}
+                    label={city}
                     onChangeText={(value)=> setCity(value)}
                     icon = {
                         <MaterialCommunityIcons 
@@ -191,7 +170,7 @@ const SignUp: ScreenFC<'SignUp'> = ({navigation}) => {
             </View>
             
             <CustomInput 
-                label={'Phone'}
+                label={phone}
                 key={'phone-pad'}
                 onChangeText={(value) => 
                     {setPhone(value)}}
@@ -205,7 +184,7 @@ const SignUp: ScreenFC<'SignUp'> = ({navigation}) => {
                 valid={phoneIsValid}
             />
             <CustomInput 
-                label={'Email'}
+                label={email}
                 keyboardType='email-address'
                 valid = {emailIsValid}
                 onChangeText={(value) => {
@@ -219,8 +198,8 @@ const SignUp: ScreenFC<'SignUp'> = ({navigation}) => {
                         style={styles.icons}/>}
             />
             <CustomInput 
-                label={'Password'}
-                inputType={'password'}
+                label={password}
+                /* inputType={'password'} */
                 onChangeText={(value) => setPassword(value)}
                 icon = {
                     <MaterialCommunityIcons 
@@ -230,17 +209,11 @@ const SignUp: ScreenFC<'SignUp'> = ({navigation}) => {
                         style={styles.icons}/>}
             />
             <CustomButton 
-                label={'Register'} 
+                label={'Update'} 
                 onPress={() => {
                     (name && surname && nat && city && email && password && date && phone && image) &&
                     dispatch(signUp({name, surname, nat, city, email, password, date, phone, image, isLogged:true}));
                   }} />
-            <View style={styles.toLoginView}>
-                <Text>Already registered?</Text>
-                <TouchableOpacity onPress={()=>navigation.navigate('Login')}>
-                    <Text style={styles.toLoginText}>Login</Text>
-                </TouchableOpacity>
-            </View>
         </ScrollView>
     </SafeAreaView>
   )
@@ -278,8 +251,8 @@ const styles = StyleSheet.create({
     },
     toLoginView: {
         flexDirection: 'row',
-        justifyContent: 'center',
-        marginBottom: 20
+        marginBottom: 20,
+        marginTop: 20,
     },
     toLoginText: {
         color: Colors.Third,
@@ -288,4 +261,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default SignUp
+export default EditProfile

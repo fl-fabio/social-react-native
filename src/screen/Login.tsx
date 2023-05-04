@@ -52,8 +52,9 @@ const Login: ScreenFC<'Login'> = ({navigation}) => {
             <CustomButton 
                 label={'Login'} 
                 onPress={()=>{
-                    email && password && dispatch(login({email, password, isLogged:true}))
-                }} />
+                    ((email && password) && dispatch(login({email, password, isLogged:true})));
+                }}
+                />
             <View style={styles.toLoginView}>
                 <Text>New User?</Text>
                 <TouchableOpacity onPress={()=> navigation.navigate('SignUp')}>

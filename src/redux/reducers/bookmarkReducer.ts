@@ -30,6 +30,17 @@ const bookmarkReducer = (state = initialState, action: BookmarkAction) => {
                     ),
                 ],
             };
+            case BOOKMARK_ACTIONS.VERIFY_BOOKMARK:
+                const removedBookmark = state.bookmarks.find(
+                  item => item.id.value === (action.payload as PersonDetails).id.value
+                );
+                return {
+                    ...state,
+                    bookmarks: state.bookmarks.filter(
+                        item => item.id.value !== (action.payload as PersonDetails).id.value
+                    ),
+                    bookMarked: !!removedBookmark
+                };
         case BOOKMARK_ACTIONS.REMOVE_ALL_BOOKMARK:
             return {
                 bookmarks: [],

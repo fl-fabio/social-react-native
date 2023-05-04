@@ -9,34 +9,20 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import CustomButton from '../components/CustomButton';
 
-const ProfileScreen : CustomScreenFC<'Profile'> = ({navigation}) => {
-  const dispatch = useDispatch();
+const InfoScreen : CustomScreenFC<'Profile'> = ({navigation}) => {
+  
 
-  const { account } = useSelector(
-    (state: { accountReducer: AccountProps }) => state.accountReducer
-  );
-
-  const supportedURL = "https://google.com";
-  const handlePress = async (tel: string) => {
-    const supported = await Linking.canOpenURL(supportedURL);
-    if (supported) {
-      // await Linking.openURL(supportedURL);
-      // await Linking.openSettings();
-      // await Linking.openURL("mailto:lenda.ortiz@example.com");
-      await Linking.openURL(tel);
-    }
-  };
 
   return (
     <SafeAreaView style={styles.container}>
       <ImageBackground
         style={styles.BackgroundImage}
         blurRadius={20}
-        source= {require('../../assets/img/gray-gradient.jpg')}
+        source= {require('../../assets/img/code.jpg')}
         >
           <View style={styles.Centered}>
-            <Image source={{ uri: account.image }} style={styles.userImage} />
-            <Text style={styles.NameText}>{account.name} {account.surname}</Text>
+            <Image source={require('../../assets/img/myPhoto.jpg')} style={styles.userImage} />
+            <Text style={styles.NameText}>Fabio Lanzafame</Text>
             <View style={styles.InformationRow}>
               <View style={{marginRight: 3}}>
                 <MaterialIcons 
@@ -46,7 +32,7 @@ const ProfileScreen : CustomScreenFC<'Profile'> = ({navigation}) => {
               </View>
               <View>
                 <Text style={styles.TextSecondary}>
-                  {account.nat} - {account.city}
+                  ITA - Catania
                 </Text>
               </View>
             </View>
@@ -59,38 +45,25 @@ const ProfileScreen : CustomScreenFC<'Profile'> = ({navigation}) => {
               </View>
               <View>
                 <Text style={styles.TextSecondary}>
-                  {account.date && account.date.toString()}
+                  03/08/1980
                 </Text>
               </View>
             </View> 
         </View>
       </ImageBackground>
       <View style={styles.externalView}>
-        <TouchableOpacity onPress={() => handlePress(`tel:${account.phone}`)}>
+ 
           <View style={[styles.InformationRow, {marginTop: 10}]}>
             <MaterialIcons name='phone' style={styles.externalIcon}/>
-            <Text>Tel: {account.phone}</Text>
+            <Text>Tel: 3395389146</Text>
           </View>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => handlePress(`mailto:${account.email}`)}>
+
           <View style={[styles.InformationRow, {marginTop: 10}]}>
             <MaterialIcons name='mail' style={styles.externalIcon}/>
-            <Text>Email: {account.email}</Text>
+            <Text>Email: fabio.lanzafame0308@gmail.com </Text>
           </View>
-        </TouchableOpacity>
+
       </View>
-    
-      <View style={{paddingHorizontal: 60}}>
-      <TouchableOpacity 
-        onPress={() => dispatch(logout())}
-        style ={styles.buttonStyle}>
-        <Text style={styles.buttonTextStyle}>
-            Logout
-        </Text>
-        </TouchableOpacity>
-      </View>
-      
-    
     </SafeAreaView>
   );
 }
@@ -161,4 +134,4 @@ buttonTextStyle: {
 }
 });
 
-export default ProfileScreen;
+export default InfoScreen;

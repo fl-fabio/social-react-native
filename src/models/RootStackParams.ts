@@ -5,6 +5,7 @@ type RootStackParams = {
   Detail: {person: PersonDetails};
   Profile: undefined;
   Favorite: {person: PersonDetails};
+  EditProfile: undefined;
   Setting: undefined;
   Homepage: undefined;
   SignUp: undefined;
@@ -12,6 +13,7 @@ type RootStackParams = {
   Logout: undefined;
   HomeStack: undefined;
   DrawerMenu: undefined;
+  info: undefined;
 };
 
 export default RootStackParams;

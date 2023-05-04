@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { TouchableOpacity, View, Image, Text, StyleSheet } from 'react-native';
 import { Colors } from '../models/Colors';
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -10,7 +10,11 @@ interface CardProps {
     onPressBookmark: () => void,
     index: number,
   }
-  const CardHome: React.FC<CardProps> = ({ item, onPressDetails, onPressBookmark, index }) => (
+  const CardHome: React.FC<CardProps> = ({ item, onPressDetails, onPressBookmark, index }) => 
+  {
+    const [isBookmark, setIsBookmark] = useState<boolean>(false)
+    const coloredBookmark = isBookmark ? {backgroundColor : Colors.Second} : {backgroundColor: Colors.Third}
+    return(
       <View 
         style={styles.containerCardItem}
         key={`key-${index}`}>
@@ -25,29 +29,31 @@ interface CardProps {
       
       <TouchableOpacity
         onPress={onPressBookmark}>
-        <View style={styles.bookmarksCardItem}>
+        <View style={[styles.bookmarksCardItem, coloredBookmark]}>
           <MaterialCommunityIcons 
             style ={styles.bookmarksIconItem}
             name='cards-heart' />
         </View>
       </TouchableOpacity> 
       </View>
-);
+)};
 
 const styles = StyleSheet.create({
     containerCardItem: {
         //backgroundColor: Colors.First,
         borderRadius: 8,
         alignItems: 'center',
-        margin: 10,
+        margin: 5,
         shadowOpacity: 0.05,
         shadowRadius: 10,
         shadowColor: Colors.Fourth,
         shadowOffset: {height: 0, width: 0},
+        flex: 1,
+        padding: 10
       },
       iconImage: {
-        width: 150,
-        height: 150,
+        width: 170,
+        height: 170,
         resizeMode: 'contain',
       },
       nameCardItem: {

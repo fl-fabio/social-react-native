@@ -11,8 +11,18 @@ export interface Account {
     image: string,
 }
 
+export interface AccountLogin {
+    email: string,
+    password: string,
+    isLogged: boolean,
+}
+
 export interface AccountProps {
     account: Account;
+}
+
+export interface AccountLoginProps {
+    account: AccountLogin;
 }
 
 export interface AccountAction {
@@ -33,7 +43,7 @@ export const signUp = (account: Account) => {
     };
 };
 
-export const login = (account: Account) => {
+export const login = (account: AccountLogin) => {
     return {
         type: ACCOUNT_ACTIONS.LOGIN_ACCOUNT,
         payload: account,

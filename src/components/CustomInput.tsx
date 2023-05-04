@@ -11,12 +11,12 @@ interface InputProps {
     fieldButtonLabel?: string;
     fieldButtonFunction?: () => void;
     onChangeText?: (value: string) => void;
-    onEndEditing? : (value: string) => void;
+    onBlur? : () => void;
     valid?: boolean
   }
 
 
-const CustomInput = ({icon, onChangeText, inputType, label, keyboardType, fieldButtonLabel, fieldButtonFunction, onEndEditing, valid=true}: InputProps) => {
+const CustomInput = ({icon, onChangeText, inputType, label, keyboardType, fieldButtonLabel, fieldButtonFunction, onBlur, valid=true}: InputProps) => {
   const colorInput = valid ? {color: Colors.Fourth} : {color: Colors.Third}
   return (
  
@@ -36,10 +36,10 @@ const CustomInput = ({icon, onChangeText, inputType, label, keyboardType, fieldB
               '') : (
                     <TextInput 
                       placeholder={label}
-                      
                       keyboardType={keyboardType}
                       style={[styles.inputStyle, colorInput]}
                       onChangeText={onChangeText}
+                      onBlur={onBlur}
                     />))
       }
       <TouchableOpacity onPress={fieldButtonFunction}>

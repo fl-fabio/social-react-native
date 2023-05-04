@@ -12,6 +12,7 @@ import { DrawerNavigationProp, createDrawerNavigator } from "@react-navigation/d
 import ProfileScreen from "../screen/ProfileScreen";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Favorites from "../screen/Favorites";
+import InfoScreen from "../screen/InfoScreen";
 import SettingScreen from "../screen/SettingScreen";
 import Login from "../screen/Login";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -27,6 +28,8 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { logout } from "../redux/actions/accountActions";
 import { log } from "react-native-reanimated";
+import EditProfile from "../screen/EditProfile";
+import Logout from "../components/Logout";
 
 
 const RootStack = createStackNavigator<RootStackParams>();
@@ -48,6 +51,9 @@ const HomeStack : React.FC = () => {
             <RootStack.Screen name={ROUTES.Login} component={Login} />
             <RootStack.Screen name={ROUTES.Detail} component={DetailScreen} />
             <RootStack.Screen name={ROUTES.Favorite} component={Favorites} />
+            <RootStack.Screen name={ROUTES.EditProfile} component={EditProfile} />
+            <RootStack.Screen name={ROUTES.info} component={InfoScreen} />
+            <RootStack.Screen name={'Logout'} component={Logout} />
         </RootStack.Navigator>
     );
 };
@@ -82,8 +88,8 @@ const MainStack: React.FC = () => {
         <Tab.Navigator
           initialRouteName={ROUTES.Home}
           screenOptions={{
-            tabBarActiveTintColor: "#fc8386",
-            tabBarInactiveTintColor: "gray",
+            tabBarActiveTintColor: Colors.Third,
+            tabBarInactiveTintColor: Colors.Fourth,
           }}
         >
           <Tab.Screen
@@ -134,19 +140,19 @@ const MainStack: React.FC = () => {
       }
         return(
           <Drawer.Navigator initialRouteName={ROUTES.Profile}>
-            <Drawer.Screen
+            {/* <Drawer.Screen
                         name={ROUTES.Homepage}
                         component={TabNavigation}
                         options={{
-                          headerShown: true, 
+                          headerShown: false, 
                           headerStyle: {backgroundColor: Colors.Second}
                           }
                         }
-                    />
-            
-            <Drawer.Screen name={ROUTES.Setting} component={SettingScreen} />
+                    /> */}
             <Drawer.Screen name={ROUTES.Profile} component={ProfileScreen} />
             <Drawer.Screen name={ROUTES.Favorite} component={Favorites} />
+            <Drawer.Screen name={ROUTES.EditProfile} component={EditProfile} />
+            <Drawer.Screen name={ROUTES.info} component={InfoScreen} />
             <Drawer.Screen
                   name={ROUTES.Logout}
                   component={LogOut}

@@ -19,8 +19,10 @@ const initialState: AccountProps = {
         password: '', 
         image: '',
         isLogged: false}
-}
-
+} 
+/* const initialState: AccountProps = {
+    account: { email: "", password: "", isLogged: false },
+  }; */
 const accountReducer = (state= initialState, action: AccountAction) => {
     switch (action.type) {
         case ACCOUNT_ACTIONS.ADD_ACCOUNT:

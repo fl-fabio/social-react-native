@@ -13,6 +13,7 @@ export enum BOOKMARK_ACTIONS {
     ADD_BOOKMARK = 'ADD_BOOKMARK',
     REMOVE_BOOKMARK = 'REMOVE_BOOKMARK',
     REMOVE_ALL_BOOKMARK = 'REMOVE_ALL_BOOKMARK',
+    VERIFY_BOOKMARK = 'VERIFY_BOOKMARK'
 }
  
 export const addBookmark = (bookmark: PersonDetails) => {
@@ -25,6 +26,13 @@ export const addBookmark = (bookmark: PersonDetails) => {
 export const removeBookmark = (bookmark: PersonDetails) => {
     return {
         type: BOOKMARK_ACTIONS.REMOVE_BOOKMARK,
+        payload: bookmark,
+    };
+}
+
+export const verifyBookmark = (bookmark: PersonDetails) => {
+    return {
+        type: BOOKMARK_ACTIONS.VERIFY_BOOKMARK,
         payload: bookmark,
     };
 }
