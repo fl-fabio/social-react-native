@@ -16,7 +16,7 @@ const CustomButton: React.FC<buttonProps>= ({label, onPress}) => {
             {label}
         </Text>
     </TouchableOpacity>
-  )
+  );
 };
 
 const styles = StyleSheet.create({
@@ -32,6 +32,6 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: Colors.Second
     }
-})
+});
 
 export default CustomButton

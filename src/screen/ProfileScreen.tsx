@@ -4,10 +4,8 @@ import { CustomScreenFC } from "../models/ScreenFC";
 import { useDispatch, useSelector } from "react-redux";
 import { AccountProps, logout, removeAccount } from "../redux/actions/accountActions";
 import { Colors } from '../models/Colors';
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-import CustomButton from '../components/CustomButton';
 
 const ProfileScreen : CustomScreenFC<'Profile'> = ({navigation}) => {
   const dispatch = useDispatch();
@@ -21,9 +19,6 @@ const ProfileScreen : CustomScreenFC<'Profile'> = ({navigation}) => {
   const handlePress = async (tel: string) => {
     const supported = await Linking.canOpenURL(supportedURL);
     if (supported) {
-      // await Linking.openURL(supportedURL);
-      // await Linking.openSettings();
-      // await Linking.openURL("mailto:lenda.ortiz@example.com");
       await Linking.openURL(tel);
     }
   };

@@ -13,7 +13,6 @@ import { addBookmark } from '../redux/actions/bookmarkActions';
 const HomeScreen : ScreenFC<'Home'> = ({navigation}) => {
 
   const [state, setState] = useState<Array<PersonDetails>>();
-  
 
 /*    useEffect(() => {
     getData()
@@ -72,8 +71,11 @@ const HomeScreen : ScreenFC<'Home'> = ({navigation}) => {
     const newTimerId = setTimeout(() => {
       // action after user has been detected idle
       getData()
+      
     }, timeForInactivityInSecond * 1000)
+   
     timerId.current = newTimerId
+    
   }
 
   

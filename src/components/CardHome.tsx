@@ -4,8 +4,7 @@ import { Colors } from '../models/Colors';
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { PersonDetails } from '../models/Data';
 import { useSelector } from 'react-redux';
-import { addBookmark, verifyBookmark, BookmarkProps } from '../redux/actions/bookmarkActions';
-
+import { BookmarkProps } from '../redux/actions/bookmarkActions';
 interface CardProps {
     item: PersonDetails,
     onPressDetails: () => void,
@@ -18,8 +17,7 @@ interface CardProps {
       (state: { bookmarkReducer: BookmarkProps }) => state.bookmarkReducer
     ); 
     const isBookmarked = bookmarks.some(bookmark => bookmark.id.value === item.id.value)
-    const [isBookmark, setIsBookmark] = useState<boolean>(false)
-    const coloredBookmark = isBookmark ? {backgroundColor : Colors.Second} : {backgroundColor: Colors.Third}
+    
     return(
       <View 
         style={styles.containerCardItem}
@@ -57,7 +55,6 @@ interface CardProps {
 
 const styles = StyleSheet.create({
     containerCardItem: {
-        //backgroundColor: Colors.First,
         borderRadius: 8,
         alignItems: 'center',
         margin: 5,
@@ -109,6 +106,6 @@ const styles = StyleSheet.create({
         color: Colors.Default,
         fontSize: 18,
       }
-})
+});
 
 export default CardHome

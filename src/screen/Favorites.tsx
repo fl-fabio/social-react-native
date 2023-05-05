@@ -7,18 +7,16 @@ import CardBookmark from '../components/CardBookmark';
 import { Colors } from '../models/Colors';
 import {
   BookmarkProps,
-  removeAllBookmark,
   removeBookmark,
 } from "../redux/actions/bookmarkActions";
 import { TouchableOpacity } from "react-native";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { useDispatch } from "react-redux";
-
 
 const Favorites: CustomScreenFC<'Favorite'> = ({navigation}) => {
 
 const [modalVisible, setModalVisible] = useState(false);
 const [itemToDelete, setItemToDelete] = useState<PersonDetails>();
+
 const { bookmarks } = useSelector(
   (state: { bookmarkReducer: BookmarkProps }) => state.bookmarkReducer
 );
@@ -45,6 +43,13 @@ const dispatch = useDispatch();
                 itemToDelete && dispatch(removeBookmark(itemToDelete));}}>
               <Text style={styles.textStyle}>Confirm</Text>
             </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.button]}
+              onPress={() => {
+                setModalVisible(!modalVisible);
+              }}>
+              <Text style={[styles.textStyle, {color: Colors.Third}]}>X</Text>
+            </TouchableOpacity>
           </View>
         </View>
         
@@ -62,7 +67,6 @@ const dispatch = useDispatch();
                 index={index}
                 modalVisible={modalVisible}
                 onPress={() => navigation.navigate('Detail', {person: {...item}})}
-                /* onLongPress={() => dispatch(removeBookmark(item))} */
                 onLongPress={() => {
                   setModalVisible(true);
                   setItemToDelete(item);

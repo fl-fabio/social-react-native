@@ -1,4 +1,3 @@
-import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Image, ScrollView, ImageBackground, Linking, Dimensions, TouchableOpacity} from 'react-native';
 import { ScreenFC } from '../models/ScreenFC';
 import { PersonDetails } from '../models/Data';
@@ -6,7 +5,7 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { useDispatch, useSelector } from 'react-redux';
 
-import { addBookmark, verifyBookmark, BookmarkProps } from '../redux/actions/bookmarkActions';
+import { addBookmark, BookmarkProps } from '../redux/actions/bookmarkActions';
 
 import { Colors } from '../models/Colors';
 import { useEffect, useState } from 'react';
@@ -16,9 +15,6 @@ const DetailScreen : ScreenFC<'Detail'> = ({navigation, route}) => {
   const handlePress = async (tel: string) => {
     const supported = await Linking.canOpenURL(supportedURL);
     if (supported) {
-      // await Linking.openURL(supportedURL);
-      // await Linking.openSettings();
-      // await Linking.openURL("mailto:lenda.ortiz@example.com");
       await Linking.openURL(tel);
     }
   };
@@ -44,7 +40,7 @@ const DetailScreen : ScreenFC<'Detail'> = ({navigation, route}) => {
           <Text style={styles.textDescription}>{dob.date.slice(0,10)}</Text>
           <Text style={styles.textDescription}>{location.country}({nat}) - {location.city}</Text>
           <View style={styles.infoView}>
-            <TouchableOpacity onPress={() => handlePress(`tel:${cell}`)}>
+            <TouchableOpacity onPress={() => handlePress(`mailto:${email}`)}>
               <View style={styles.infoItem}>
                 <MaterialIcons name='email' style={styles.infoIcon}/>
                 <Text style={styles.infoContent}>{email}</Text>
@@ -67,10 +63,7 @@ const DetailScreen : ScreenFC<'Detail'> = ({navigation, route}) => {
             <MaterialCommunityIcons name="cards-heart" style={styles.bookmarkIcon} />
             <Text style={styles.bookmarkText}>Add to Favorite</Text>
         </TouchableOpacity> :
-    
           <MaterialCommunityIcons name="cards-heart" style={[styles.bookmarkIcon, {color: Colors.Third}]} />
-          
-
         }
         </View>     
     </ScrollView>

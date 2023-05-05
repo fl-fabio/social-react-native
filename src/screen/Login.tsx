@@ -3,7 +3,6 @@ import {Text, ScrollView, StyleSheet, Platform, StatusBar, SafeAreaView, View, I
 import { Colors } from '../models/Colors';
 import CustomInput from '../components/CustomInput';
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons"
 import CustomButton from '../components/CustomButton';
 import { ScreenFC } from '../models/ScreenFC';
 import { useDispatch } from 'react-redux';
@@ -106,6 +105,6 @@ const styles = StyleSheet.create({
         fontWeight: '700',
         marginLeft: 5,
     }
-})
+});
 
 export default Login

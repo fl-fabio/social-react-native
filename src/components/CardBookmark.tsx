@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
-import { TouchableOpacity, Alert, View, Image, Text, StyleSheet, Modal } from 'react-native';
+import { TouchableOpacity, Alert, View, Image, Text, StyleSheet } from 'react-native';
 import { Colors } from '../models/Colors';
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { PersonDetails } from '../models/Data';
 
 interface CardProps {
@@ -27,13 +26,11 @@ const CardBookmark: React.FC<CardProps> = ({item, onPress, modalVisible, onLongP
                     </View>
                 </View>
         </TouchableOpacity>
-
-    )
+    );
 };
 
 const styles = StyleSheet.create({
     containerCardItem: {
-        //backgroundColor: Colors.First,
         borderRadius: 8,
         alignItems: 'center',
         margin: 10,
@@ -56,7 +53,6 @@ const styles = StyleSheet.create({
       nameTextCardItem: {
         color: Colors.Third,
       },
-      
 });
 
 export default CardBookmark;

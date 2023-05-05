@@ -6,8 +6,6 @@ import { logout } from "../redux/actions/accountActions";
 import RootStackParams from "../models/RootStackParams";
 import { CustomScreenFC } from "../models/ScreenFC";
 
-
-
 const LogOut: CustomScreenFC<'Logout'>= ({ navigation }) => {
   const dispatch = useDispatch();
   dispatch(logout());

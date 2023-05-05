@@ -1,18 +1,12 @@
-import React, {useState} from 'react';
+import React from 'react';
 import { StyleSheet, ImageBackground, Text, StatusBar, Image, View, Button, Linking, SafeAreaView, Platform, TouchableOpacity } from 'react-native';
 import { CustomScreenFC } from "../models/ScreenFC";
-import { useDispatch, useSelector } from "react-redux";
-import { AccountProps, logout } from "../redux/actions/accountActions";
 import { Colors } from '../models/Colors';
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-import CustomButton from '../components/CustomButton';
 
 const InfoScreen : CustomScreenFC<'Profile'> = ({navigation}) => {
   
-
-
   return (
     <SafeAreaView style={styles.container}>
       <ImageBackground

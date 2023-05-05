@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {Text, ScrollView, StyleSheet, Platform, StatusBar, SafeAreaView, View, Image, TouchableOpacity, TextInput, GestureResponderEvent} from 'react-native';
 import { Colors } from '../models/Colors';
 import CustomInput from '../components/CustomInput';
@@ -6,78 +6,65 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import MaterialIcons from "react-native-vector-icons/MaterialIcons"
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import CustomButton from '../components/CustomButton';
-import { ScreenFC } from '../models/ScreenFC';
-import { useDispatch } from 'react-redux';
+import { CustomScreenFC } from '../models/ScreenFC';
+import { useDispatch, useSelector } from 'react-redux';
+import { AccountProps, logout } from "../redux/actions/accountActions";
 import { signUp } from '../redux/actions/accountActions';
+import { User } from '../models/User';
 
 import * as ImagePicker from "expo-image-picker";
 import { Camera, CameraType } from "expo-camera";
 
-const SignUp: ScreenFC<'SignUp'> = ({navigation}) => {
- 
-    const [name, setName] = useState<string>('');
-    const [surname, setSurname] = useState<string>('');
-    const [nat, setNat] = useState<string>('');
-    const [city, setCity] = useState<string>('');
-    const [email, setEmail] = useState<string>('');
+
+const EditProfile: CustomScreenFC<'EditProfile'> = ({navigation}) => {
+    const dispatch = useDispatch();
+    const { account } = useSelector(
+     (state: { accountReducer: AccountProps }) => state.accountReducer
+   );
     
-    const [password, setPassword] = useState<string>('');
-    const [phone, setPhone] = useState<string>('');
-    const [date, setDate] = useState(new Date());
+    const [phoneIsValid, setPhoneIsValid] = useState(true);
+    const phoneRegex = /^\d{10}$/;
+    const [name, setName] = useState<string>(account.name);
+    const [surname, setSurname] = useState<string>(account.surname);
+    const [nat, setNat] = useState<string>(account.nat);
+    const [city, setCity] = useState<string>(account.city);
+    const [email, setEmail] = useState<string>(account.email);
+    const [emailIsValid, setEmailIsValid] = useState(true);
+    const mailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const [password, setPassword] = useState<string>(account.password);
+    const [phone, setPhone] = useState<string>(account.phone);
+    const [date, setDate] = useState(account.date);
     const [open, setOpen] = useState(false);
-    const [dateLabel, setDateLabel] = useState('Date of Birth');
-    
-    const [image, setImage] = useState<string>('');
+    const [dateLabel, setDateLabel] = useState('Change Date');
+    const [user, setUser] = useState<User>();
+
+    const [image, setImage] = useState<string>(account.image);
     const [type, setType] = useState(CameraType.back);
     const [permission, requestPermission] = Camera.useCameraPermissions();
+  
+    const [error, setError] = useState({})
 
-    const [clicked, setClicked] = useState<boolean>(false);
-    const [emailIsValid, setEmailIsValid] = useState(true);
-    const [phoneIsValid, setPhoneIsValid] = useState(true);
-
-    const mailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const phoneRegex = /^\d{10}$/;
-
-    type FormError = {
-        name?: string;
-        surname?: string;
-        image?: string;
-        date?: string;
-        nat?: string;
-        city?: string;
-        phone?: string;
-        phoneInvalid?: string;
-        email?: string;
-        mailInvalid?: string;
-        password?: string;
-      }
-
-    const [error, setError] = useState<FormError>({})
-
-    useEffect(() => {
-        const newPhoneIsValid: boolean = phoneRegex.test(phone);
-        const newEmailIsValid: boolean = mailRegex.test(email);
-        const myDate = new Date()
-        const newError = {
-            ...(name ? {} : { name: 'Name is required' }),
-            ...(surname ? {} : { surname: 'Surname is required' }),
-            ...(image ? {} : { image: 'image is required' }),
-            ...(date.getFullYear() === myDate.getFullYear() ? { date: 'Date is required' }: {}),
-            ...(nat ? {} : { nat: 'Nationality is required' }),
-            ...(city ? {} : { city: 'City is required' }),
-            ...(phone && newPhoneIsValid ? {} : { phone: 'phone is required' }),
-            ...(phone && !newPhoneIsValid ? { phone: 'Invalid phone use 10 numbers' } : {}),
-            ...(email && newEmailIsValid ? {} : { email: 'mail is required' }),
-            ...(email && !newEmailIsValid ? { email: 'Invalid Email: example mail@mail.it' } : {}),
-            ...(password ? {} : { password: 'password is required' }),
-          };
-
-        setError(newError);
+    const handleSubmit = (event: GestureResponderEvent) => {
+        event.preventDefault();
         
-        setPhoneIsValid(newPhoneIsValid);
-        setEmailIsValid(newEmailIsValid);
+        const newError = {
+          ...(name ? {} : { name: 'Name is required' }),
+          ...(surname ? {} : { surname: 'Surname is required' }),
+          ...(image ? {} : { image: 'image is required' }),
+          ...(date ? {} : { date: 'Date is required' }),
+          ...(nat ? {} : { nat: 'Nationality is required' }),
+          ...(city ? {} : { city: 'City is required' }),
+          ...(phone ? {} : { phone: 'phone is required' }),
+          ...(phoneIsValid ? {} : { phoneInvalid: 'Invalid phone use 10 numbers' }),
+          ...(email ? {} : { email: 'mail is required' }),
+          ...(emailIsValid ? {} : { mailInvalid: 'Invalid Email: example mail@mail.it' }),
+          ...(password ? {} : { password: 'password is required' }),
+        };
+        
+        setError(newError);
+      };
 
-      }, [clicked, phone, name, surname, image, date, nat, city, email, emailIsValid, password]);
+    
 
     const pickImage = async () => {
         ImagePicker.requestMediaLibraryPermissionsAsync
@@ -93,8 +80,6 @@ const SignUp: ScreenFC<'SignUp'> = ({navigation}) => {
         }
       };
 
-   const dispatch = useDispatch();
-
   return (
     <SafeAreaView style={styles.container}>
         <ScrollView
@@ -102,15 +87,20 @@ const SignUp: ScreenFC<'SignUp'> = ({navigation}) => {
         style={{paddingHorizontal: 25}}>
             <View style={styles.centeredImg}>
                 <Image 
-                    source={require('../../assets/img/registration.png')}
+                    source={{ uri: image }}
                     style={{width: 200, height: 200}}
                 />
             </View>
-            
-            <Text style={styles.headingText}>Register</Text>
+            <View style={styles.toLoginView}>
+                <Text>Change Image...</Text>
+                <TouchableOpacity onPress={pickImage}>
+                    <Text style={styles.toLoginText}>Click</Text>
+                </TouchableOpacity>
+            </View>
+
             <View style={styles.addressView}>
                 <CustomInput 
-                    label={'Name'}
+                    label={name}
                     onChangeText={(value)=> setName(value)}
                     icon = {
                         <MaterialCommunityIcons 
@@ -118,11 +108,9 @@ const SignUp: ScreenFC<'SignUp'> = ({navigation}) => {
                             color={Colors.Fourth} 
                             size={25}
                             style={styles.icons}/>}
-                    valid={(!clicked || !('name' in error))}
-                    errorText={error.name}
                 />
                 <CustomInput 
-                    label={'Surname'}
+                    label={surname}
                     onChangeText={(value)=> setSurname(value)}
                     icon = {
                         <MaterialCommunityIcons 
@@ -130,28 +118,10 @@ const SignUp: ScreenFC<'SignUp'> = ({navigation}) => {
                             color={Colors.Fourth} 
                             size={25}
                             style={styles.icons}/>}
-                    valid={(!clicked || !('surname' in error))}
-                    errorText={error.surname}
                 />
             </View>
-            <View style={styles.toLoginView}>
-                <Text>Insert an image...</Text>
-                <TouchableOpacity onPress={pickImage}>
-                    <Text style={styles.toLoginText}>Click</Text>
-                </TouchableOpacity>
-            </View>
-            {(clicked && ('image' in error)) && 
-                <View style={styles.invalidView}>
-                    <Text style={styles.invalidText}>error.image</Text>
-                </View>}
-            <View style={{alignItems: 'center', marginBottom: 15}}>
-                {image && (
-                    <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
-                )}
-            </View>
-           
             <CustomInput 
-                label={'Date of Birthday'}
+                label={date.toString()}
                 inputType='date'
                 icon = {
                     <MaterialIcons
@@ -159,12 +129,13 @@ const SignUp: ScreenFC<'SignUp'> = ({navigation}) => {
                         color={Colors.Fourth} 
                         size={25}
                         style={styles.icons}/>}
-                fieldButtonLabel={dateLabel}
+                fieldButtonLabel={date.toString().slice(0,10)}
                 fieldButtonFunction={() => setOpen(true)}
-                valid={(!clicked || !('date' in error))}
-                errorText={error.date}
+
             />
-        
+            {/* <TouchableOpacity onPress={() => setOpen(true)}>
+                <Text>{dateLabel}</Text>
+            </TouchableOpacity> */}
             <DateTimePickerModal 
                 isVisible={open}
                 mode='date'
@@ -177,7 +148,7 @@ const SignUp: ScreenFC<'SignUp'> = ({navigation}) => {
             />
             <View style={styles.addressView}>
                 <CustomInput 
-                    label={'Nationality'}
+                    label={nat}
                     onChangeText={(value)=> setNat(value)}
                     icon = {
                         <MaterialCommunityIcons 
@@ -185,11 +156,9 @@ const SignUp: ScreenFC<'SignUp'> = ({navigation}) => {
                             color={Colors.Fourth} 
                             size={25}
                             style={styles.icons}/>}
-                    valid={(!clicked || !('nat' in error))}
-                    errorText={error.nat}
                 />
                 <CustomInput 
-                    label={'City'}
+                    label={city}
                     onChangeText={(value)=> setCity(value)}
                     icon = {
                         <MaterialCommunityIcons 
@@ -197,29 +166,27 @@ const SignUp: ScreenFC<'SignUp'> = ({navigation}) => {
                             color={Colors.Fourth} 
                             size={25}
                             style={styles.icons}/>}
-                    valid={(!clicked || !('city' in error))}
-                    errorText={error.city}
                 />
             </View>
             
             <CustomInput 
-                label={'Phone'}
+                label={phone}
                 key={'phone-pad'}
                 onChangeText={(value) => 
-                    {setPhone(value)
-                    }}
+                    {setPhone(value)}}
                 icon = {
                     <MaterialCommunityIcons 
                         name='phone' 
                         color={Colors.Fourth} 
                         size={25}
                         style={styles.icons}/>}
-                valid={(!clicked || !('phone' in error))}
-                errorText={error.phone}
+
+                valid={phoneIsValid}
             />
             <CustomInput 
-                label={'Email'}
+                label={email}
                 keyboardType='email-address'
+                valid = {emailIsValid}
                 onChangeText={(value) => {
                     setEmail(value)}}
                 icon = {
@@ -228,12 +195,10 @@ const SignUp: ScreenFC<'SignUp'> = ({navigation}) => {
                         color={Colors.Fourth} 
                         size={25}
                         style={styles.icons}/>}
-                valid={(!clicked || !('email' in error))}
-                errorText={error.email}
             />
             <CustomInput 
-                label={'Password'}
-                inputType={'password'}
+                label={password}
+                /* inputType={'password'} */
                 onChangeText={(value) => setPassword(value)}
                 icon = {
                     <MaterialCommunityIcons 
@@ -241,22 +206,13 @@ const SignUp: ScreenFC<'SignUp'> = ({navigation}) => {
                         color={Colors.Fourth} 
                         size={25}
                         style={styles.icons}/>}
-                valid={(!clicked || !('password' in error))}
-                errorText={error.password}
             />
             <CustomButton 
-                label={'Register'} 
+                label={'Update'} 
                 onPress={() => {
-                    setClicked(true);
-                    Object.keys(error).length === 0 &&
+                    (name && surname && nat && city && email && password && date && phone && image) &&
                     dispatch(signUp({name, surname, nat, city, email, password, date, phone, image, isLogged:true}));
                   }} />
-            <View style={styles.toLoginView}>
-                <Text>Already registered?</Text>
-                <TouchableOpacity onPress={()=>navigation.navigate('Login')}>
-                    <Text style={styles.toLoginText}>Login</Text>
-                </TouchableOpacity>
-            </View>
         </ScrollView>
     </SafeAreaView>
   )
@@ -294,22 +250,14 @@ const styles = StyleSheet.create({
     },
     toLoginView: {
         flexDirection: 'row',
-        justifyContent: 'center',
-        marginBottom: 20
+        marginBottom: 20,
+        marginTop: 20,
     },
     toLoginText: {
         color: Colors.Third,
         fontWeight: '700',
         marginLeft: 5,
-    },
-    invalidView: {
-        alignItems: 'center'
-    },
-    invalidText: {
-        color: Colors.Third,
-        fontSize: 10,
-        marginTop: -10,
-      }
+    }
 })
 
-export default SignUp
+export default EditProfile

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Text, ScrollView, StyleSheet, Platform, StatusBar, SafeAreaView, View, Image, TouchableOpacity, TextInput, GestureResponderEvent} from 'react-native';
 import { Colors } from '../models/Colors';
 import CustomInput from '../components/CustomInput';
@@ -7,64 +7,82 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons"
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import CustomButton from '../components/CustomButton';
 import { CustomScreenFC } from '../models/ScreenFC';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector} from 'react-redux';
 import { AccountProps, logout } from "../redux/actions/accountActions";
 import { signUp } from '../redux/actions/accountActions';
-import { User } from '../models/User';
 
 import * as ImagePicker from "expo-image-picker";
 import { Camera, CameraType } from "expo-camera";
-
 
 const EditProfile: CustomScreenFC<'EditProfile'> = ({navigation}) => {
     const dispatch = useDispatch();
     const { account } = useSelector(
      (state: { accountReducer: AccountProps }) => state.accountReducer
    );
-    
-    const [phoneIsValid, setPhoneIsValid] = useState(true);
-    const phoneRegex = /^\d{10}$/;
+
     const [name, setName] = useState<string>(account.name);
     const [surname, setSurname] = useState<string>(account.surname);
     const [nat, setNat] = useState<string>(account.nat);
     const [city, setCity] = useState<string>(account.city);
     const [email, setEmail] = useState<string>(account.email);
-    const [emailIsValid, setEmailIsValid] = useState(true);
-    const mailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    
     const [password, setPassword] = useState<string>(account.password);
     const [phone, setPhone] = useState<string>(account.phone);
     const [date, setDate] = useState(account.date);
     const [open, setOpen] = useState(false);
     const [dateLabel, setDateLabel] = useState('Change Date');
-    const [user, setUser] = useState<User>();
-
+ 
     const [image, setImage] = useState<string>(account.image);
     const [type, setType] = useState(CameraType.back);
     const [permission, requestPermission] = Camera.useCameraPermissions();
-  
-    const [error, setError] = useState({})
 
-    const handleSubmit = (event: GestureResponderEvent) => {
-        event.preventDefault();
-        
+    const [clicked, setClicked] = useState<boolean>(false);
+    const [emailIsValid, setEmailIsValid] = useState(true);
+    const [phoneIsValid, setPhoneIsValid] = useState(true);
+
+    const mailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const phoneRegex = /^\d{10}$/;
+
+    type FormError = {
+        name?: string;
+        surname?: string;
+        image?: string;
+        date?: string;
+        nat?: string;
+        city?: string;
+        phone?: string;
+        phoneInvalid?: string;
+        email?: string;
+        mailInvalid?: string;
+        password?: string;
+      }
+
+    const [error, setError] = useState<FormError>({});
+
+    useEffect(() => {
+        const newPhoneIsValid: boolean = phoneRegex.test(phone);
+        const newEmailIsValid: boolean = mailRegex.test(email);
+        const myDate = new Date()
         const newError = {
-          ...(name ? {} : { name: 'Name is required' }),
-          ...(surname ? {} : { surname: 'Surname is required' }),
-          ...(image ? {} : { image: 'image is required' }),
-          ...(date ? {} : { date: 'Date is required' }),
-          ...(nat ? {} : { nat: 'Nationality is required' }),
-          ...(city ? {} : { city: 'City is required' }),
-          ...(phone ? {} : { phone: 'phone is required' }),
-          ...(phoneIsValid ? {} : { phoneInvalid: 'Invalid phone use 10 numbers' }),
-          ...(email ? {} : { email: 'mail is required' }),
-          ...(emailIsValid ? {} : { mailInvalid: 'Invalid Email: example mail@mail.it' }),
-          ...(password ? {} : { password: 'password is required' }),
-        };
-        
-        setError(newError);
-      };
+            ...(name ? {} : { name: 'Name is required' }),
+            ...(surname ? {} : { surname: 'Surname is required' }),
+            ...(image ? {} : { image: 'image is required' }),
+            ...(date ? {} : { date: 'Date is required' }),
+            ...(nat ? {} : { nat: 'Nationality is required' }),
+            ...(city ? {} : { city: 'City is required' }),
+            ...(phone && newPhoneIsValid ? {} : { phone: 'phone is required' }),
+            ...(phone && !newPhoneIsValid ? { phone: 'Invalid phone use 10 numbers' } : {}),
+            ...(email && newEmailIsValid ? {} : { email: 'mail is required' }),
+            ...(email && !newEmailIsValid ? { email: 'Invalid Email: example mail@mail.it' } : {}),
+            ...(password ? {} : { password: 'password is required' }),
+          };
 
-    
+        setError(newError);
+        
+        setPhoneIsValid(newPhoneIsValid);
+        setEmailIsValid(newEmailIsValid);
+
+      }, [clicked, phone, name, surname, image, date, nat, city, email, emailIsValid, password]);
 
     const pickImage = async () => {
         ImagePicker.requestMediaLibraryPermissionsAsync
@@ -108,6 +126,8 @@ const EditProfile: CustomScreenFC<'EditProfile'> = ({navigation}) => {
                             color={Colors.Fourth} 
                             size={25}
                             style={styles.icons}/>}
+                    valid={(!clicked || !('name' in error))}
+                    errorText={error.name}
                 />
                 <CustomInput 
                     label={surname}
@@ -118,6 +138,8 @@ const EditProfile: CustomScreenFC<'EditProfile'> = ({navigation}) => {
                             color={Colors.Fourth} 
                             size={25}
                             style={styles.icons}/>}
+                    valid={(!clicked || !('surname' in error))}
+                    errorText={error.surname}
                 />
             </View>
             <CustomInput 
@@ -131,11 +153,11 @@ const EditProfile: CustomScreenFC<'EditProfile'> = ({navigation}) => {
                         style={styles.icons}/>}
                 fieldButtonLabel={date.toString().slice(0,10)}
                 fieldButtonFunction={() => setOpen(true)}
+                valid={(!clicked || !('date' in error))}
+                errorText={error.date}
 
             />
-            {/* <TouchableOpacity onPress={() => setOpen(true)}>
-                <Text>{dateLabel}</Text>
-            </TouchableOpacity> */}
+   
             <DateTimePickerModal 
                 isVisible={open}
                 mode='date'
@@ -156,6 +178,8 @@ const EditProfile: CustomScreenFC<'EditProfile'> = ({navigation}) => {
                             color={Colors.Fourth} 
                             size={25}
                             style={styles.icons}/>}
+                    valid={(!clicked || !('nat' in error))}
+                    errorText={error.nat}
                 />
                 <CustomInput 
                     label={city}
@@ -166,9 +190,10 @@ const EditProfile: CustomScreenFC<'EditProfile'> = ({navigation}) => {
                             color={Colors.Fourth} 
                             size={25}
                             style={styles.icons}/>}
+                    valid={(!clicked || !('city' in error))}
+                    errorText={error.city}
                 />
-            </View>
-            
+            </View> 
             <CustomInput 
                 label={phone}
                 key={'phone-pad'}
@@ -180,22 +205,22 @@ const EditProfile: CustomScreenFC<'EditProfile'> = ({navigation}) => {
                         color={Colors.Fourth} 
                         size={25}
                         style={styles.icons}/>}
-                onBlur={() => (phone && phoneRegex.test(phone)) ? setPhoneIsValid(true) : setPhoneIsValid(false)}
-                valid={phoneIsValid}
+                valid={(!clicked || !('phone' in error))}
+                errorText={error.phone}
             />
             <CustomInput 
                 label={email}
                 keyboardType='email-address'
-                valid = {emailIsValid}
                 onChangeText={(value) => {
                     setEmail(value)}}
-                onBlur={() => (email && (email === '' || mailRegex.test(email))) ? setEmailIsValid(true) : setEmailIsValid(false)}
                 icon = {
                     <MaterialCommunityIcons 
                         name='email' 
                         color={Colors.Fourth} 
                         size={25}
                         style={styles.icons}/>}
+                valid={(!clicked || !('email' in error))}
+                errorText={error.email}
             />
             <CustomInput 
                 label={password}
@@ -207,12 +232,16 @@ const EditProfile: CustomScreenFC<'EditProfile'> = ({navigation}) => {
                         color={Colors.Fourth} 
                         size={25}
                         style={styles.icons}/>}
+                valid={(!clicked || !('password' in error))}
+                errorText={error.password}
             />
             <CustomButton 
                 label={'Update'} 
                 onPress={() => {
-                    (name && surname && nat && city && email && password && date && phone && image) &&
-                    dispatch(signUp({name, surname, nat, city, email, password, date, phone, image, isLogged:true}));
+                    setClicked(true);
+                    Object.keys(error).length === 0 &&
+                    dispatch(signUp({name, surname, nat, city, email, password, date, phone, image, isLogged:true})) &&
+                    navigation.navigate('Profile');
                   }} />
         </ScrollView>
     </SafeAreaView>

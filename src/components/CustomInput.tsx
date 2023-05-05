@@ -2,7 +2,6 @@ import React, { ReactNode } from 'react';
 import {View, StyleSheet, TextInput, TouchableOpacity, Text} from 'react-native';
 import { Colors } from '../models/Colors';
 import MaterialIcons from "react-native-vector-icons/MaterialIcons"
-
 interface InputProps {
     icon: React.ReactNode,
     label: string,
@@ -11,12 +10,11 @@ interface InputProps {
     fieldButtonLabel?: string;
     fieldButtonFunction?: () => void;
     onChangeText?: (value: string) => void;
-    onBlur? : () => void;
     valid?: boolean;
     errorText?: string;
   } 
 
-const CustomInput = ({icon, onChangeText, inputType, label, keyboardType, fieldButtonLabel, errorText='', fieldButtonFunction, onBlur, valid=true}: InputProps) => {
+const CustomInput = ({icon, onChangeText, inputType, label, keyboardType, fieldButtonLabel, errorText='', fieldButtonFunction, valid=true}: InputProps) => {
   const colorInput = valid ? {color: Colors.Fourth} : {color: Colors.Third}
   return (
     <View style={styles.inputView}>
@@ -28,6 +26,7 @@ const CustomInput = ({icon, onChangeText, inputType, label, keyboardType, fieldB
             style={styles.inputStyle}
             secureTextEntry={true}
             onChangeText={onChangeText}
+            
           
           />
         ) : 
@@ -38,7 +37,6 @@ const CustomInput = ({icon, onChangeText, inputType, label, keyboardType, fieldB
                       keyboardType={keyboardType}
                       style={[styles.inputStyle, colorInput]}
                       onChangeText={onChangeText}
-                      onBlur={onBlur}
                     />))
       }
       <View style={{marginRight: 7}}>
