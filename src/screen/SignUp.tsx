@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Text, ScrollView, StyleSheet, Platform, StatusBar, SafeAreaView, View, Image, TouchableOpacity, TextInput, GestureResponderEvent} from 'react-native';
 import { Colors } from '../models/Colors';
 import CustomInput from '../components/CustomInput';
@@ -19,57 +19,76 @@ const SignUp: ScreenFC<'SignUp'> = ({navigation}) => {
     
     const [phoneIsValid, setPhoneIsValid] = useState(true);
     const phoneRegex = /^\d{10}$/;
-    const [name, setName] = useState<string>();
-    const [surname, setSurname] = useState<string>();
-    const [nat, setNat] = useState<string>();
-    const [city, setCity] = useState<string>();
-    const [email, setEmail] = useState<string>();
+    const [name, setName] = useState<string>('');
+    const [surname, setSurname] = useState<string>('');
+    const [nat, setNat] = useState<string>('');
+    const [city, setCity] = useState<string>('');
+    const [email, setEmail] = useState<string>('');
     const [emailIsValid, setEmailIsValid] = useState(true);
     const mailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const [password, setPassword] = useState<string>();
+    const [password, setPassword] = useState<string>('');
     const [phone, setPhone] = useState<string>('');
     const [date, setDate] = useState(new Date());
     const [open, setOpen] = useState(false);
     const [dateLabel, setDateLabel] = useState('Date of Birth');
     const [user, setUser] = useState<User>();
+    const [clicked, setClicked] = useState<boolean>(false);
 
-    const [image, setImage] = useState<string>();
+    const [image, setImage] = useState<string>('');
     const [type, setType] = useState(CameraType.back);
     const [permission, requestPermission] = Camera.useCameraPermissions();
   
   
     
 
-    /* const [error, setError] = useState({
-        name: '',
+    type FormError = {
+        name?: string;
+        surname?: string;
+        image?: string;
+        date?: string;
+        nat?: string;
+        city?: string;
+        phone?: string;
+        phoneInvalid?: string;
+        email?: string;
+        mailInvalid?: string;
+        password?: string;
+      }
+    const [error, setError] = useState<FormError>({})
 
-    }); */
-    const [error, setError] = useState({})
-
-    const handleSubmit = (event: GestureResponderEvent) => {
-        event.preventDefault();
-        
+    
+    
+    useEffect(() => {
+        const newPhoneIsValid: boolean = phoneRegex.test(phone);
+        const newEmailIsValid: boolean = mailRegex.test(email);
+        const myDate = new Date()
         const newError = {
-          ...(name ? {} : { name: 'Name is required' }),
-          ...(surname ? {} : { surname: 'Surname is required' }),
-          ...(image ? {} : { image: 'image is required' }),
-          ...(date ? {} : { date: 'Date is required' }),
-          ...(nat ? {} : { nat: 'Nationality is required' }),
-          ...(city ? {} : { city: 'City is required' }),
-          ...(phone ? {} : { phone: 'phone is required' }),
-          ...(phoneIsValid ? {} : { phoneInvalid: 'Invalid phone use 10 numbers' }),
-          ...(email ? {} : { email: 'mail is required' }),
-          ...(emailIsValid ? {} : { mailInvalid: 'Invalid Email: example mail@mail.it' }),
-          ...(password ? {} : { password: 'password is required' }),
-        };
+            ...(name ? {} : { name: 'Name is required' }),
+            ...(surname ? {} : { surname: 'Surname is required' }),
+            ...(image ? {} : { image: 'image is required' }),
+            ...(date.getFullYear() === myDate.getFullYear() ? { date: 'Date is required' }: {}),
+            ...(nat ? {} : { nat: 'Nationality is required' }),
+            ...(city ? {} : { city: 'City is required' }),
+            ...(phone && newPhoneIsValid ? {} : { phone: 'phone is required' }),
+            ...(phone && !newPhoneIsValid ? { phone: 'Invalid phone use 10 numbers' } : {}),
+            ...(email && newEmailIsValid ? {} : { email: 'mail is required' }),
+            ...(email && !newEmailIsValid ? { email: 'Invalid Email: example mail@mail.it' } : {}),
+            ...(password ? {} : { password: 'password is required' }),
+          };
+          console.log(!!newPhoneIsValid, !!phone )
+          setError(newError);
         
-        setError(newError);
-      };
+        setPhoneIsValid(newPhoneIsValid);
+        setEmailIsValid(newEmailIsValid);
 
+        console.log(date.getFullYear(),'-' ,myDate.getFullYear())
+      }, [clicked, phone, name, surname, image, date, nat, city, email, emailIsValid, password]);
+    //useEffect(()=> handleSubmit, [name, surname, image, date, nat, city, phone, phoneIsValid, email, emailIsValid, password])
+    //console.log(error)
+     //   console.log(!phone);
     console.log(error)
-        console.log(!phone);
-     
-  
+    
+      console.log(date.getMonth(),)
     
 
     const pickImage = async () => {
@@ -112,6 +131,8 @@ const SignUp: ScreenFC<'SignUp'> = ({navigation}) => {
                             color={Colors.Fourth} 
                             size={25}
                             style={styles.icons}/>}
+                    valid={(!clicked || !('name' in error))}
+                    errorText={error.name}
                 />
                 <CustomInput 
                     label={'Surname'}
@@ -122,11 +143,13 @@ const SignUp: ScreenFC<'SignUp'> = ({navigation}) => {
                             color={Colors.Fourth} 
                             size={25}
                             style={styles.icons}/>}
+                        valid={(!clicked || !('surname' in error))}
+                        errorText={error.surname}
                 />
             </View>
-            <TouchableOpacity onPress={(e) =>{ handleSubmit(e); console.log(handleSubmit(e))}}>
+            {/* <TouchableOpacity onPress={() =>{ handleSubmit(); console.log(handleSubmit())}}>
                 <Text>Verifica</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <View style={styles.toLoginView}>
                 <Text>Insert an image...</Text>
                 <TouchableOpacity onPress={pickImage}>
@@ -134,6 +157,10 @@ const SignUp: ScreenFC<'SignUp'> = ({navigation}) => {
                 </TouchableOpacity>
                 
             </View>
+            {(clicked && ('image' in error)) && 
+                <View style={styles.invalidView}>
+                    <Text style={styles.invalidText}>error.image</Text>
+                </View>}
             <View style={{alignItems: 'center', marginBottom: 15}}>
                 {image && (
                     <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
@@ -152,7 +179,8 @@ const SignUp: ScreenFC<'SignUp'> = ({navigation}) => {
                         style={styles.icons}/>}
                 fieldButtonLabel={dateLabel}
                 fieldButtonFunction={() => setOpen(true)}
-
+                valid={(!clicked || !('date' in error))}
+                errorText={error.date}
             />
             {/* <TouchableOpacity onPress={() => setOpen(true)}>
                 <Text>{dateLabel}</Text>
@@ -177,6 +205,8 @@ const SignUp: ScreenFC<'SignUp'> = ({navigation}) => {
                             color={Colors.Fourth} 
                             size={25}
                             style={styles.icons}/>}
+                    valid={(!clicked || !('nat' in error))}
+                    errorText={error.nat}
                 />
                 <CustomInput 
                     label={'City'}
@@ -187,6 +217,8 @@ const SignUp: ScreenFC<'SignUp'> = ({navigation}) => {
                             color={Colors.Fourth} 
                             size={25}
                             style={styles.icons}/>}
+                    valid={(!clicked || !('city' in error))}
+                    errorText={error.city}
                 />
             </View>
             
@@ -194,20 +226,21 @@ const SignUp: ScreenFC<'SignUp'> = ({navigation}) => {
                 label={'Phone'}
                 key={'phone-pad'}
                 onChangeText={(value) => 
-                    {setPhone(value)}}
+                    {setPhone(value)
+                    }}
                 icon = {
                     <MaterialCommunityIcons 
                         name='phone' 
                         color={Colors.Fourth} 
                         size={25}
                         style={styles.icons}/>}
-                onBlur={() => (phone && phoneRegex.test(phone)) ? setPhoneIsValid(true) : setPhoneIsValid(false)}
-                valid={phoneIsValid}
+                //onBlur={() => (clicked && phone && phoneRegex.test(phone)) ? setPhoneIsValid(true) : setPhoneIsValid(false)}
+                valid={(!clicked || !('phone' in error))}
+                errorText={error.phone}
             />
             <CustomInput 
                 label={'Email'}
                 keyboardType='email-address'
-                valid = {emailIsValid}
                 onChangeText={(value) => {
                     setEmail(value)}}
                 onBlur={() => (email && (email === '' || mailRegex.test(email))) ? setEmailIsValid(true) : setEmailIsValid(false)}
@@ -217,7 +250,10 @@ const SignUp: ScreenFC<'SignUp'> = ({navigation}) => {
                         color={Colors.Fourth} 
                         size={25}
                         style={styles.icons}/>}
+                valid={(!clicked || !('email' in error))}
+                errorText={error.email}
             />
+            <TouchableOpacity onPress={()=> setClicked(!clicked)} ><Text>Click</Text></TouchableOpacity>
             <CustomInput 
                 label={'Password'}
                 inputType={'password'}
@@ -228,11 +264,14 @@ const SignUp: ScreenFC<'SignUp'> = ({navigation}) => {
                         color={Colors.Fourth} 
                         size={25}
                         style={styles.icons}/>}
+                valid={(!clicked || !('password' in error))}
+                errorText={error.password}
             />
             <CustomButton 
                 label={'Register'} 
                 onPress={() => {
-                    (name && surname && nat && city && email && password && date && phone && image) &&
+                    setClicked(true);
+                    Object.keys(error).length === 0 &&
                     dispatch(signUp({name, surname, nat, city, email, password, date, phone, image, isLogged:true}));
                   }} />
             <View style={styles.toLoginView}>
@@ -285,7 +324,15 @@ const styles = StyleSheet.create({
         color: Colors.Third,
         fontWeight: '700',
         marginLeft: 5,
-    }
+    },
+    invalidView: {
+        alignItems: 'center'
+    },
+    invalidText: {
+        color: Colors.Third,
+        fontSize: 10,
+        marginTop: -10,
+      }
 })
 
 export default SignUp

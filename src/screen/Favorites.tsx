@@ -55,6 +55,7 @@ const dispatch = useDispatch();
             data={bookmarks}
             showsVerticalScrollIndicator={false}
             keyExtractor={(_,index) => `key-${index}`}
+            
             renderItem={({item, index}) => 
               <CardBookmark 
                 item = {item}
@@ -65,10 +66,9 @@ const dispatch = useDispatch();
                 onLongPress={() => {
                   setModalVisible(true);
                   setItemToDelete(item);
-                }}
-          />
-    }
-  />}
+                }}/>}
+              numColumns={2}
+            />} 
       
     </SafeAreaView>
   );
@@ -77,7 +77,6 @@ const dispatch = useDispatch();
 const styles = StyleSheet.create({
   container: {
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
-    flex: 1,
     backgroundColor: Colors.First,
     paddingHorizontal: 10,
     alignItems: 'center'

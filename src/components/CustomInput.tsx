@@ -12,14 +12,13 @@ interface InputProps {
     fieldButtonFunction?: () => void;
     onChangeText?: (value: string) => void;
     onBlur? : () => void;
-    valid?: boolean
-  }
+    valid?: boolean;
+    errorText?: string;
+  } 
 
-
-const CustomInput = ({icon, onChangeText, inputType, label, keyboardType, fieldButtonLabel, fieldButtonFunction, onBlur, valid=true}: InputProps) => {
+const CustomInput = ({icon, onChangeText, inputType, label, keyboardType, fieldButtonLabel, errorText='', fieldButtonFunction, onBlur, valid=true}: InputProps) => {
   const colorInput = valid ? {color: Colors.Fourth} : {color: Colors.Third}
   return (
- 
     <View style={styles.inputView}>
       {icon}
       {inputType === 'password' ? (
@@ -42,15 +41,23 @@ const CustomInput = ({icon, onChangeText, inputType, label, keyboardType, fieldB
                       onBlur={onBlur}
                     />))
       }
-      <TouchableOpacity onPress={fieldButtonFunction}>
-        <Text>{fieldButtonLabel}</Text>
-      </TouchableOpacity>
-      {valid === true ? null : <MaterialIcons name='error' style={styles.invalidText} />}
+      <View style={{marginRight: 7}}>
+        <TouchableOpacity onPress={fieldButtonFunction}>
+          <Text>{fieldButtonLabel}</Text>
+        </TouchableOpacity>
+      </View>
+      
+      {/* {valid === true ? null : <MaterialIcons name='error' style={styles.invalidText} />} */}
+     <View style={{flex:1}}>
+      {valid !== true ? 
+      <View style={styles.invalidView}>
+        <Text style={styles.invalidText}>{errorText}</Text> 
+      </View> :
+       null}
+      </View>
     </View>
-          
-  
-    
-  )
+
+  );
 }
 
 const styles = StyleSheet.create({
@@ -66,9 +73,13 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 0
   },
+  invalidView: {
+    alignItems: 'flex-end',
+    paddingTop: 3
+  },
   invalidText: {
     color: Colors.Third,
-    fontSize: 20
+    fontSize: 10,
   }
 })
 
