@@ -1,24 +1,81 @@
-import React, {useState, useEffect} from 'react';
-import { StyleSheet, Text, Platform, StatusBar, View, Image, FlatList, TouchableOpacity, SafeAreaView } from 'react-native';
+import React, {useState, useEffect, useRef} from 'react';
+import { StyleSheet,PanResponder, Text, Platform, StatusBar, FlatList, SafeAreaView, AppState } from 'react-native';
 import {Person, PersonDetails} from '../models/Data'
 import { Colors } from '../models/Colors';
 import { ScreenFC } from '../models/ScreenFC';
 import CardHome from '../components/CardHome';
-import { v4 as uuid } from 'uuid';
+import IdleTimerManager from 'react-native-idle-timer';
 
 import { useDispatch } from 'react-redux';
 import { addBookmark } from '../redux/actions/bookmarkActions';
 
+
 const HomeScreen : ScreenFC<'Home'> = ({navigation}) => {
 
   const [state, setState] = useState<Array<PersonDetails>>();
+  
 
-   useEffect(() => {
+/*    useEffect(() => {
     getData()
     setInterval (
       getData, 120000
     )
-  }, []);
+  }, []); */
+
+  const timerId = useRef<NodeJS.Timeout | undefined>(undefined)
+  const [timeForInactivityInSecond, setTimeForInactivityInSecond] = useState(
+    120
+  )
+
+  useEffect(() => {
+    getData()
+    resetInactivityTimeout()
+  }, [])
+
+  /**
+   * const panResponder = React.useRef(PanResponder.create
+   * ({ onStartShouldSetPanResponderCapture: (e, gestureState) => 
+   * { resetInactivityTimeout(); return false; }, })).current;: 
+   * qui viene creata una reference 
+   * per gestire le risposte al tocco dell'utente. 
+   * Questa reference viene utilizzata 
+   * per creare un oggetto PanResponder con la funzione PanResponder.create. 
+   * La funzione onStartShouldSetPanResponderCapture
+   *  viene chiamata ogni volta che l'utente tocca lo schermo. 
+   * In questo caso, viene chiamata la funzione resetInactivityTimeout() 
+   * e viene restituito false per 
+   * indicare che l'evento non deve essere gestito.
+   */
+  const panResponder = React.useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponderCapture: (e, gestureState) => {
+        resetInactivityTimeout();
+        return false;
+      },
+    })
+  ).current;
+
+  /**
+   * const resetInactivityTimeout = () => { ... }: 
+   * qui viene definita la funzione resetInactivityTimeout().
+   *  Questa funzione cancella il timer corrente (se presente)
+   *  utilizzando clearTimeout(). Viene quindi creato un nuovo timer 
+   * utilizzando setTimeout() che esegue la funzione getData() 
+   * dopo timeForInactivityInSecond secondi. Infine, 
+   * la reference timerId.current viene aggiornata 
+   * con il nuovo timerId appena creato.
+   */
+  const resetInactivityTimeout = () => {
+    if (timerId.current) {
+      clearTimeout(timerId.current)
+    }
+    const newTimerId = setTimeout(() => {
+      // action after user has been detected idle
+      getData()
+    }, timeForInactivityInSecond * 1000)
+    timerId.current = newTimerId
+  }
+
   
   const getData = async () => {
     try {
@@ -38,7 +95,7 @@ const HomeScreen : ScreenFC<'Home'> = ({navigation}) => {
   const dispatch = useDispatch()
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} {...panResponder.panHandlers}>
       
       <Text>Ci sono {state?.length} risultati</Text>
       <FlatList
@@ -54,8 +111,6 @@ const HomeScreen : ScreenFC<'Home'> = ({navigation}) => {
                   dispatch(addBookmark(item))
                 }}  
                 />}
-          
-              
           numColumns={2}
         />
     </SafeAreaView>

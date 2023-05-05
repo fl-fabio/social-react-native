@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addBookmark, verifyBookmark, BookmarkProps } from '../redux/actions/bookmarkActions';
 
 import { Colors } from '../models/Colors';
+import { useEffect, useState } from 'react';
 
 const DetailScreen : ScreenFC<'Detail'> = ({navigation, route}) => {
   const supportedURL = "https://google.com";
@@ -21,13 +22,17 @@ const DetailScreen : ScreenFC<'Detail'> = ({navigation, route}) => {
       await Linking.openURL(tel);
     }
   };
-  //const dispatch = useDispatch();
+
+  const dispatch = useDispatch();
   const {picture, dob, name, nat, email, cell, location, id} : PersonDetails= route.params.person;
 
   const { bookmarks } = useSelector(
     (state: { bookmarkReducer: BookmarkProps }) => state.bookmarkReducer
   ); 
-  const isBookmarked = bookmarks.some(item => item.id.value === id.value)
+  const [isBookmarked, setIsBookmarked] = useState<boolean>(false)
+  useEffect(() => {
+    bookmarks.some(item => item.id.value === id.value) && setIsBookmarked(true);
+  }, []);
  
   return (
     <ScrollView style={styles.containerDetails}>
@@ -54,11 +59,19 @@ const DetailScreen : ScreenFC<'Detail'> = ({navigation, route}) => {
           </View>
         </View>
         <View style={styles.bookmarkView}>
-       {!isBookmarked &&
-          <TouchableOpacity style={styles.bookmarkButton} /* onPress={() => dispatch(addBookmark(route.params.person))} */>
-          <MaterialCommunityIcons name="cards-heart" style={styles.bookmarkIcon} />
-          <Text style={styles.bookmarkText}>Add to Favorite</Text>
-        </TouchableOpacity>}
+       {!isBookmarked ?
+          <TouchableOpacity style={styles.bookmarkButton} onPress={() => {
+            setIsBookmarked(true)
+            dispatch(addBookmark(route.params.person))
+            }} >
+            <MaterialCommunityIcons name="cards-heart" style={styles.bookmarkIcon} />
+            <Text style={styles.bookmarkText}>Add to Favorite</Text>
+        </TouchableOpacity> :
+    
+          <MaterialCommunityIcons name="cards-heart" style={[styles.bookmarkIcon, {color: Colors.Third}]} />
+          
+
+        }
         </View>     
     </ScrollView>
   );

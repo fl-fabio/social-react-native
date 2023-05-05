@@ -34,6 +34,7 @@ export enum ACCOUNT_ACTIONS {
     ADD_ACCOUNT = 'ADD_ACCOUNT',
     LOGIN_ACCOUNT = 'LOGIN_ACCOUNT',
     LOGOUT_ACCOUNT = 'LOGOUT_ACCOUNT',
+    REMOVE_ACCOUNT = 'REMOVE_ACCOUNT'
 }
 
 export const signUp = (account: Account) => {
@@ -47,6 +48,12 @@ export const login = (account: AccountLogin) => {
     return {
         type: ACCOUNT_ACTIONS.LOGIN_ACCOUNT,
         payload: account,
+    };
+};
+
+export const removeAccount = () => {
+    return {
+        type: ACCOUNT_ACTIONS.REMOVE_ACCOUNT,
     };
 };
 

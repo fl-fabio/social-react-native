@@ -27,7 +27,10 @@ interface CardProps {
       <TouchableOpacity
         activeOpacity={0.5}
         onPress={onPressDetails}>
-          <Image source={{uri: item.picture.large}} style={styles.iconImage} />
+          <View style={styles.imageContainer}>
+            <Image source={{uri: item.picture.large}} style={styles.iconImage} />
+            {isBookmarked &&<MaterialCommunityIcons name="cards-heart" style={styles.bookmarkIcon} />}
+          </View>
           <View style={styles.nameCardItem}>
             <Text style={styles.nameTextCardItem}>{item.name.first} {item.name.last}</Text>
           </View>
@@ -64,6 +67,16 @@ const styles = StyleSheet.create({
         shadowOffset: {height: 0, width: 0},
         flex: 1,
         padding: 10
+      },
+      imageContainer: {
+        position: 'relative',
+      },
+      bookmarkIcon: {
+        position: 'absolute',
+        top: 10,
+        right: 10,
+        fontSize: 20,
+        color: Colors.Third,
       },
       iconImage: {
         width: 170,

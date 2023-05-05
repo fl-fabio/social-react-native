@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
-import { StyleSheet, ImageBackground, Text, StatusBar, Image, View, Button, Linking, SafeAreaView, Platform, TouchableOpacity } from 'react-native';
+import { StyleSheet, ImageBackground, Text, StatusBar, Image, View, Button, Linking, SafeAreaView, Platform, TouchableOpacity, Modal, Alert } from 'react-native';
 import { CustomScreenFC } from "../models/ScreenFC";
 import { useDispatch, useSelector } from "react-redux";
-import { AccountProps, logout } from "../redux/actions/accountActions";
+import { AccountProps, logout, removeAccount } from "../redux/actions/accountActions";
 import { Colors } from '../models/Colors';
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
@@ -11,6 +11,7 @@ import CustomButton from '../components/CustomButton';
 
 const ProfileScreen : CustomScreenFC<'Profile'> = ({navigation}) => {
   const dispatch = useDispatch();
+  const [modalVisible, setModalVisible] = useState(false);
 
   const { account } = useSelector(
     (state: { accountReducer: AccountProps }) => state.accountReducer
@@ -29,6 +30,39 @@ const ProfileScreen : CustomScreenFC<'Profile'> = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <Modal
+            animationType="slide"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => {
+              Alert.alert('Modal has been closed.');
+              setModalVisible(!modalVisible);
+         }}>
+            <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>Are you sure to Delete?</Text>
+            <TouchableOpacity
+              style={[styles.button, styles.buttonClose]}
+              onPress={() => {
+                dispatch(removeAccount())
+                //itemToDelete && dispatch(removeBookmark(itemToDelete));
+              }}>
+              <Text style={styles.textStyle}>Confirm</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.button]}
+              onPress={() => {
+                setModalVisible(!modalVisible);
+                //itemToDelete && dispatch(removeBookmark(itemToDelete));
+              }}>
+              <Text style={[styles.textStyle, {color: Colors.Third}]}>X</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+        </Modal>
+      {modalVisible 
+        ? <View style={[StyleSheet.absoluteFillObject, { backgroundColor: Colors.Third, opacity: 0.7 }]} />
+        :(<View>
       <ImageBackground
         style={styles.BackgroundImage}
         blurRadius={20}
@@ -80,7 +114,7 @@ const ProfileScreen : CustomScreenFC<'Profile'> = ({navigation}) => {
         </TouchableOpacity>
       </View>
     
-      <View style={{paddingHorizontal: 60}}>
+      <View style={{paddingHorizontal: 60, marginTop:60}}>
       <TouchableOpacity 
         onPress={() => dispatch(logout())}
         style ={styles.buttonStyle}>
@@ -88,9 +122,16 @@ const ProfileScreen : CustomScreenFC<'Profile'> = ({navigation}) => {
             Logout
         </Text>
         </TouchableOpacity>
+        <TouchableOpacity 
+        onPress={() => setModalVisible(true)}
+        style ={[styles.buttonStyle, {backgroundColor: Colors.Third}]}>
+        <Text style={styles.buttonTextStyle}>
+            Delete Account
+        </Text>
+        </TouchableOpacity>
       </View>
-      
-    
+      </View>
+        )}
     </SafeAreaView>
   );
 }
@@ -147,18 +188,56 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   buttonStyle : {
-    backgroundColor: Colors.Third,
+    backgroundColor: Colors.Fourth,
     padding: 10,
     borderRadius: 20,
-    marginTop: 60,
+    marginBottom: 10
+  },
+  buttonTextStyle: {
+      textAlign: 'center',
+      fontWeight: '700',
+      fontSize: 14,
+      color: Colors.Second
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
 
-},
-buttonTextStyle: {
+  buttonClose: {
+    backgroundColor: Colors.Third,
+  },
+  modalText: {
+    marginBottom: 15,
     textAlign: 'center',
-    fontWeight: '700',
-    fontSize: 14,
-    color: Colors.Second
-}
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
 });
 
 export default ProfileScreen;

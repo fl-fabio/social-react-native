@@ -155,7 +155,7 @@ const MainStack: React.FC = () => {
             <Drawer.Screen name={ROUTES.info} component={InfoScreen} />
             <Drawer.Screen
                   name={ROUTES.Logout}
-                  component={LogOut}
+                  component={Logout}
                   options={{
                     title: "Logout",
                     drawerIcon: ({ color, size }) => (

@@ -50,6 +50,11 @@ const accountReducer = (state= initialState, action: AccountAction) => {
                     isLogged: false
                 },
             };
+        case ACCOUNT_ACTIONS.REMOVE_ACCOUNT: 
+            return {
+                ...state,
+                account: {}
+            }
         default:
             return state;
     }
